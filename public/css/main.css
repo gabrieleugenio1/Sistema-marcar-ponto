@@ -1,0 +1,41 @@
+/*Definir as principais variaveis*/
+:root {
+  --var-cor-1: #176585;
+  --var-cor-2: #27b1bf;
+  --var-cor-3: #36cecc;
+  --var-cor-4: #c2e4cb;
+  --var-cor-5: #f7f3cf;
+  --var-cor-branco: #f2f2f2
+  --var-cor-preto: #2f2f2f;
+}
+a{
+    text-decoration: none;
+}
+body {
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--var-cor-branco);
+  display: flex;
+  flex-direction: column;
+}
+/*Header */
+.header {
+  display: flex;
+
+  background-color: var(--var-cor-2);
+}
+.timeHome {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: self-end;
+}
+
+.timeHome time {
+    margin-left: 10px;
+  border: 1px solid #000;
+  font-size: 3rem;
+}
+
+
+/*Fim do header*/
