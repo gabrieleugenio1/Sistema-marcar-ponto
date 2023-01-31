@@ -1,4 +1,4 @@
-const { Sequelize, Conexao } = require('../Conexao');
+const { Sequelize, Conexao } = require('../db/Conexao');
 const Funcionarios = require('./funcionarios');
 
 const Pontos = Conexao.define("pontos", {

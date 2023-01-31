@@ -14,10 +14,6 @@ let senhaCriptografada = bcrypt.hashSync(senha, salt);
 await Usuarios.create({email:email, senha:senha}).then(
     req.flash("mensagem", "Conta criada com sucesso."),
     res.redirect("/")
-)
-
-
-
-});
+)});
 
 module.exports = router;
