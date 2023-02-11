@@ -13,20 +13,22 @@
     <%- include("partials/header"); %>
 
 
-    <main>
-        <% if(mensagem.length>0) { %> 
-        <div class="alert alert-success" role="alert">
-                Conta criada com sucesso!
-        </div>
+    <main>     
+        <%if(erros.length > 0){ %>
+        <div class="alert alert-danger">
             
-            <%} %>
+            <% for(erro of erros) {%>                
+            <%= erro.error %>
+                <% } %>
+        </div>
+        <%} %>
         <form action="/entrarmatricula" method="post">
             <label for="email">Email:</label>
             <input name="email" type="emails">
             <input type="submit" value="Entrar">
         </form>
-        <small><a href="/criarconta">Crie sua conta</a></small>
-        <small><a href="/esquecisenha">Esqueceu a senha?</a></small>
+        <small><a href="/criar-conta">Crie sua conta</a></small>
+        <small><a href="/esqueci-senha">Esqueceu a senha?</a></small>
 
 
     </main>

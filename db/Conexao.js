@@ -1,10 +1,16 @@
 const Sequelize = require("sequelize");
 
+
 const Conexao = new Sequelize(process.env.DATABASE, process.env.DB_NOME, process.env.DB_SENHA, {
-  host: "localhost",
+  host: process.env.DB_HOST,
   port: process.env.DB_PORT,
-  dialect: "mysql",
-  timezone: "-03:00",
+  dialect: process.env.DB_DIALECT,
+  timezone: process.env.DB_TIMEZONE,
+  pool: {
+    max: 30,
+    min: 0,
+    idle: 10000
+  }
 });
 
 module.exports = { Sequelize, Conexao };
