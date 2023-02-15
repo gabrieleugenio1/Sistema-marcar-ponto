@@ -1,7 +1,7 @@
-const Funcionarios = require('./funcionarios');
-const Pontos = require('./ponto');
-const Usuarios = require('./usuarios');
+const Funcionarios = require('./Funcionarios');
+const Pontos = require('./Ponto');
+const Usuario = require('./Usuario');
 
 module.exports = {
-    Funcionarios, Pontos, Usuarios
+    Funcionarios, Pontos, Usuario
 };

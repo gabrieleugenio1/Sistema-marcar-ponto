@@ -1,6 +1,6 @@
 const { Sequelize, Conexao } = require('../db/Conexao');
 
-const Usuarios = Conexao.define('usuarios', {
+const Usuario = Conexao.define('usuario', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -24,6 +24,6 @@ const Usuarios = Conexao.define('usuarios', {
 
 });
 
-Usuarios.sync({ force: false });
+Usuario.sync({ force: false });
 
-module.exports = Usuarios;
+module.exports = Usuario;

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/reset.css"/>
+    <link rel="stylesheet" href="/css/main.css"/>
+    <link rel="stylesheet" href="/css/cadastrar-funcionario.css"/> 
+  </head>
+  <body>
+    <%- include("../partials/header"); %>
+    <main class="main__home">
+      <%if(erros.length > 0){ %>
+        <div class="alert danger">       
+          <p><b><% for(erro of erros) {%> <%= erro.error %> <% } %></b></p>       
+        </div>
+        <%} %>
+      <div class="main__home__div">
+      <h1 class="h1__funcionario">Alterar funcionário</h1>
+      <form action="/admin/alteracaoFuncionario" method="post" class="forms">
+        <input type="hidden" id="id" name="id" value="<%= user.id %>">
+        <label for="matricula">Matrícula</label>
+        <input type="text" class="forms-input" name="matricula" id="matricula" value="<%= user.id %>" placeholder="Deixe em branco para gerar automaticamente">
+        <label for="email">Email</label>
+        <input type="email" class="forms-input" name="email" id="email" value="<%= user.email %>" placeholder="Email">
+        <label for="senha">Senha</label>
+        <input type="password"class="forms-input" name="senha" id="senha" placeholder="Senha(Ele poderá alterar depois)">
+       
+        <br>
+        <input type="submit" class="forms-input" value="Alterar funcionario">
+      </form>
+    </div>
+    </main>
+    <script src="./js/main.js"></script>
+  </body>
+</html>

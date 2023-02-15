@@ -1,0 +1,14 @@
+.main__home__div{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin-left: 2rem;
+}
+.forms{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+}
+.forms-input{
+    height: 30px;
+}

@@ -5,8 +5,9 @@ const router = express.Router();
 
 router
       .get('/', PrincipalController.principal)
-      .get('/esqueci-senha', PrincipalController.esqueciSenha )
-      .get('/criar-conta', PrincipalController.criarConta)
+      .get('/esqueci-senha', PrincipalController.esqueciSenha)
+      
+
 
       
 module.exports = router;

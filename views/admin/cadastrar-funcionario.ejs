@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="../css/reset.css"/>
+    <link rel="stylesheet" href="../css/main.css"/>
+    <link rel="stylesheet" href="../css/cadastrar-funcionario.css"/> 
+  </head>
+  <body>
+    <%- include("../partials/header"); %>
+    <main class="main__home">
+      <%if(erros.length > 0){ %>
+        <div class="alert danger">       
+          <p><b><% for(erro of erros) {%> <%= erro.error %> <% } %></b></p>       
+        </div>
+        <%} %>
+      <div class="main__home__div">
+      <h1 class="h1__funcionario">Cadastrar novo funcionário</h1>
+      <form action="/admin/cadastrarFuncionario" method="post" class="forms">
+        <label for="matricula">Matrícula</label>
+        <input type="text" class="forms-input" name="matricula" id="matricula" placeholder="Deixe em branco para gerar automaticamente">
+        <label for="nome">Nome</label>
+        <input type="text" class="forms-input" name="nome" id="nome" placeholder="Nome">
+        <label for="email">Email</label>
+        <input type="email" class="forms-input" name="email" id="email" placeholder="Email">
+        <label for="senha">Senha</label>
+        <input type="password"class="forms-input" name="senha" id="senha" placeholder="Senha(Ele poderá alterar depois)">
+        <label for="cpf">CPF</label>
+        <input type="tel" class="forms-input" name="cpf" id="cpf" placeholder="CPF">
+        <label for="funcao">Função</label>
+        <input type="text" class="forms-input" name="funcao" id="funcao" placeholder="Função">
+        <label for="setor">Setor</label>
+        <input type="text" class="forms-input" name="setor" id="setor" placeholder="Setor">
+        <label for="cargahorariasemanal">Carga Horaria Semanal</label>
+        <input type="tel" class="forms-input" minlength="0" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número">
+        <label for="ativo">Ativo</label>
+        <select class="forms-input" name="ativo" id="ativo">
+          <option value="true" selected>Ativo</option>
+          <option value="false">Desativado</option>
+        </select>
+        <br>
+        <input type="submit" class="forms-input" value="Criar novo funcionário">
+      </form>
+    </div>
+    </main>
+    <script src="./js/main.js"></script>
+  </body>
+</html>

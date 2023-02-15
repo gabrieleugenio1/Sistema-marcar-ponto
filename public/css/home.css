@@ -1,0 +1,11 @@
+.main__home{
+    height: calc(100vh - 95px);
+}
+.tabela__funcionario{
+    margin: 5px 10px 0 10px;
+    width: calc(100% - 20px);
+    text-align: center;
+}
+.h1__funcionario{
+    margin-left: 10px;
+}

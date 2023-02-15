@@ -1,41 +1,74 @@
 /*Definir as principais variaveis*/
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;700&display=swap');
 :root {
-  --var-cor-1: #176585;
+  --var-cor-1: #176585; 
   --var-cor-2: #27b1bf;
   --var-cor-3: #36cecc;
   --var-cor-4: #c2e4cb;
   --var-cor-5: #f7f3cf;
-  --var-cor-branco: #f2f2f2
+  --var-cor-6: #17aaff;
+  --var-cor-background: #f2f2f2;
+  --var-cor-branco: #f2f2f2;
   --var-cor-preto: #2f2f2f;
+  --var-fonte-principal: 'Noto Sans', sans-serif;
+  
 }
 a{
-    text-decoration: none;
+  text-decoration: none;
+  color: var(--var-cor-6);
+}
+input{
+  border-radius: 5px;
+}
+input[type="submit"]{
+  cursor: pointer;
+}
+li{
+  list-style: none;
+}
+html{
+  font-family: 'Noto Sans', sans-serif;
 }
 body {
   height: 100vh;
-  width: 100vw;
-  background-color: var(--var-cor-branco);
+  width: 100vw; 
+  background-color: var(  --var-cor-background) !important;
+}
+/*Aviso de erro*/
+.alert{
+  position: absolute;
+  width: 100%;
+  text-align: center;
+}
+.danger{
+  background-color: #d11515c0;
+}
+.header{
   display: flex;
-  flex-direction: column;
+  background-color: var(--var-cor-6);
+  height: 70px;
+  align-items: center;
+  -webkit-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+  -moz-box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
+  box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75);
 }
-/*Header */
-.header {
+.header__nav{
+  width: 100%;
   display: flex;
-
-  background-color: var(--var-cor-2);
+  justify-content: space-between;
 }
-.timeHome {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    align-items: self-end;
+.header__nav__ul{
+  display: flex;
+  align-items: center;
 }
-
-.timeHome time {
-    margin-left: 10px;
-  border: 1px solid #000;
-  font-size: 3rem;
+.header__nav__ul-image{
+  height: 65px;
+  margin-left: 10px;
 }
-
-
-/*Fim do header*/
+.header__nav__ul > li {
+  margin-right: 15px;
+}
+.header__nav__ul > li > a {
+  color: var(--var-cor-preto);
+  font-weight: bold;
+}

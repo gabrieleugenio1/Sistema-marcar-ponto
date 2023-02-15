@@ -10,12 +10,24 @@ const Funcionarios = Conexao.define("funcionarios", {
         type: Sequelize.STRING(130),
         allowNull: false
     },
+    email: {
+        type: Sequelize.STRING(150),
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true
+        }
+    },
     senha: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
             min: 6
         }
+    },
+    cpf:{
+        type:Sequelize.STRING(15),
+        allowNull:false
     },
     funcao: {
         type: Sequelize.STRING(130),

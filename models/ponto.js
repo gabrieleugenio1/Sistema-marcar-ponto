@@ -1,5 +1,5 @@
 const { Sequelize, Conexao } = require('../db/Conexao');
-const Funcionarios = require('./funcionarios');
+const Funcionarios = require('./Funcionarios');
 
 const Pontos = Conexao.define("pontos", {
     id: {
