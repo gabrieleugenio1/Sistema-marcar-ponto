@@ -1,6 +1,7 @@
 const validateCPF = require('./validarCPF');
 
-function validarFuncionario(funcionario, tipo) {
+module.exports = (funcionario, tipo) => {
+        let matricula = funcionario.matricula;
         let nome = funcionario.nome;
         let email = funcionario.email;
         let senha = funcionario.senha;
@@ -9,6 +10,7 @@ function validarFuncionario(funcionario, tipo) {
         let setor = funcionario.setor;
         let cargaHorariaSemanal = parseInt(funcionario.cargahorariasemanal);
         let ativo = funcionario.ativo;
+        
         /** INICIO DAS VALIDAÇÕES **/      
         let erros = [];     
 
@@ -28,6 +30,9 @@ function validarFuncionario(funcionario, tipo) {
 
         cpf = cpf.trim(); // Limpa espaços em branco no inicio e final do cpf.
        /*  cpf = cpf.replace(/[^\d]/g, ''); */ // Remove caracteres não numéricos.     
+       if(!matricula || matricula == undefined || matricula == null || isNaN(matricula)){
+        erros.push({error: "Matrícula inválida! Não pode ser vazio e deve ser apenas números."});
+        }; 
 
         if(!nome || nome == undefined || nome == null ){
         erros.push({error: "Nome inválido! Não pode ser vazio e deve ser completo."});
@@ -47,7 +52,7 @@ function validarFuncionario(funcionario, tipo) {
         if (!setor || setor == undefined ||setor == null) {
         erros.push({ error: "Setor inválido!" });
         }; 
-        if (!ativo || ativo == undefined || ativo == null || (ativo !== true && ativo !== false)) {
+        if (ativo == undefined || ativo == null || (ativo !== false && ativo !== true )) {
         erros.push({ error: "Ativo inválido!" });
         }; 
 
@@ -62,5 +67,3 @@ function validarFuncionario(funcionario, tipo) {
         /* FINAL DAS VALIDAÇÕES */   
         return erros;   
 };
-
-module.exports = validarFuncionario;

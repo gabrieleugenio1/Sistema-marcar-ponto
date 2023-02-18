@@ -5,18 +5,21 @@ const toTitleCase = require('../functions/nameTitle');
 
 module.exports = class FuncionarioController {
  
-    
+    static async cadastroFuncionario(req, res) {
+        res.status(200).render("admin/cadastrar-funcionario", { title: "Cadastro funcionário", erros: req.flash("erros")});        
+    };  
+
     static async cadastrarFuncionario(req, res) {
         /*Variaveis*/
         let ativo = req.body.ativo;
-        if (ativo==='true'){
+        if (ativo == 'true'){
             ativo = true;
-        } else if (ativo==='false'){
+        } else if (ativo == 'false'){
             ativo = false;
         }
         const validado = {
             matricula: req.body.matricula,
-            nome: req.body.nome,
+            nome: toTitleCase(req.body.nome),
             email: req.body.email,
             senha :req.body.senha,
             cpf: req.body.cpf,
@@ -33,38 +36,24 @@ module.exports = class FuncionarioController {
 
         const salt = bcrypt.genSaltSync(10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);
-        const Funcionario = {
-            matricula:validado.matricula,
-            nome:validado.nome,
-            email:validado.email,
-            senha:senhaCriptografada,
-            cpf: validado.cpf,
-            funcao:validado.funcao,
-            setor:validado.setor,
-            cargahorariasemanal:validado.cargaHorariaSemanal,
-            ativo:validado.ativo
-        };   
-
-        await Funcionarios.create(Funcionario);
-        res.status(200).redirect("/admin/home");
-
-    };      
-    static async cadastroFuncionario(req, res) {
-        res.status(200).render("admin/cadastrar-funcionario", { title: "Cadastro funcionário", erros: req.flash("erros")});        
-    };   
-
+        validado.senha=senhaCriptografada;     
+        await Funcionarios.create(validado).then(() =>
+           res.status(200).redirect("/admin/home")
+        );
+    };
+          
     static async alterarFuncionario (req, res) {
         await Funcionarios.findByPk(req.params.id).then( employee =>{
             res.status(200).render("admin/alterar-funcionario", { title: "Alterar funcionário",funcionario: employee ,erros: req.flash("erros")});  
         });
     };
     static async alteracaoFuncionario (req, res) {
-        let ativo = req.body.ativo;
-        if (ativo==='true'){
+        let ativo = req.body.ativo;        
+        if (ativo == 'true'){
             ativo = true;
-        } else if (ativo==='false'){
+        } else if (ativo == 'false'){
             ativo = false;
-        }
+        };
         const validado = {
             matricula: req.body.matricula,
             nome: toTitleCase(req.body.nome),
@@ -95,8 +84,7 @@ module.exports = class FuncionarioController {
 
         await Funcionarios.update(validado, {where: {matricula: req.body.id}}).then(res.status(200).redirect("/admin/home"))
     .catch(err => {
-        console.log(err);}          
-    )};
-
-
+        console.log(err);
+    }          
+    );};
 };

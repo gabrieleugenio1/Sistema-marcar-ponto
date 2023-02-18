@@ -16,8 +16,8 @@ module.exports = class PrincipalController {
     
     static async cadastroFuncionario (req, res)  {
         res.status(200).render('admin/cadastrar-funcionario', {title: "Cadastro Funcionário", erros: req.flash("erros")});
-    }
+    };
     static async relatorio (req, res)  {
         res.status(200).render('admin/relatorio', {title: "Relatório"});
-    }
+    };
 };

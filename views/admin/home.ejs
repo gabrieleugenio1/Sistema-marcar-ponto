@@ -37,7 +37,7 @@
           <td>14/02/2023 08:00h</td>
           <td>14/02/2023 18:00h</td>
           <td><a href="#">Alterar</a></td>
-          <td>Ativo</td> 
+          <td>Não</td> 
           <% for(funcionario of funcionarios) {%> 
             <tr>  
          
@@ -50,13 +50,12 @@
             <td>aaa</td>
             <td>aa</td>
             <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
-            <td><%= funcionario.ativo===true ? "Ativo" : "Desativado" %></td>     
+            <td><%= funcionario.ativo===true ? "Sim" : "Não" %></td>     
            
         </tr>
         <% } %>  %>
         </tbody>
      </table>
     </main>
-    <script src="./js/main.js"></script>
   </body>
 </html>

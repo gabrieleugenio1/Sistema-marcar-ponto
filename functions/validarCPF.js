@@ -1,4 +1,4 @@
-function validateCPF(cpf) {
+module.exports = (cpf) => {
     // Remover caracteres não numéricos
     cpf = cpf.replace(/[^\d]/g, '');
 
@@ -31,5 +31,3 @@ function validateCPF(cpf) {
     let digits = cpf.substring(9);
     return digits === firstDigit.toString() + secondDigit.toString();
 }
-
-module.exports = validateCPF;

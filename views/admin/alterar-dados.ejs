@@ -18,10 +18,10 @@
         <%} %>
       <div class="main__home__div">
       <h1 class="h1__funcionario">Alterar funcionário</h1>
-      <form action="/admin/alteracaoFuncionario" method="post" class="forms">
+      <form action="/admin/alteracaoDados" method="post" class="forms">
         <input type="hidden" id="id" name="id" value="<%= user.id %>">
-        <label for="matricula">Matrícula</label>
-        <input type="text" class="forms-input" name="matricula" id="matricula" value="<%= user.id %>" placeholder="Deixe em branco para gerar automaticamente">
+        <label for="idAtual">Matrícula</label>
+        <input type="text" class="forms-input" name="idAtual" id="idAtual" value="<%= user.id %>" placeholder="Deixe em branco para gerar automaticamente">
         <label for="email">Email</label>
         <input type="email" class="forms-input" name="email" id="email" value="<%= user.email %>" placeholder="Email">
         <label for="senha">Senha</label>
@@ -32,6 +32,5 @@
       </form>
     </div>
     </main>
-    <script src="./js/main.js"></script>
   </body>
 </html>

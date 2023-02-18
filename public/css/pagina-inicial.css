@@ -29,8 +29,7 @@
     margin-top: 65%;
   }
   .time__home time {
-    border: 1px solid #000;
-    font-size: 2rem;
+    font-size: 2.2em;
     font-weight: bold;
   }
   
@@ -38,6 +37,9 @@
     display: flex;
     flex-direction: column;
     width: 40%;
+  }
+  .forms input[type="submit"]{
+    height: 1.5rem;
   }
   /*Fim da pagina__inicial*/
   
