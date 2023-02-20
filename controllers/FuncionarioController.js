@@ -4,7 +4,41 @@ const validarFuncionario = require('../functions/validarFuncionario');
 const toTitleCase = require('../functions/nameTitle');
 
 module.exports = class FuncionarioController {
- 
+    static async login(req,res) {
+        email = req.body.email;
+        senha = req.body.senha;
+        const erros = validarFuncionario(validado, 'cadastro');
+        if (erros.length > 0){
+            req.flash("erros", erros);
+            return  res.status(200).redirect("/");
+        };
+
+        await Funcionarios.findOne({ where: { email: email} }).then(employee => {
+            {
+              if (employee != undefined) {
+                if (bcrypt.compareSync(senha, employee.senha)) {
+                  return res.redirect("/funcionario/home");
+                } else {
+                    erros.push({ error:"Email ou senha invalidos."});
+                    req.flash("erros", erros);
+                  return res.redirect("/");
+                };
+              } else {
+                erros.push({ error:"Email ou senha invalidos."});
+                req.flash("erros", erros);
+                res.redirect("/");
+              };
+            };
+          });
+
+
+        res.status(200).redirect("/funcionario/home");
+    };
+
+    static async index (req,res) {
+        res.status(200).render('/funcionario/home', {title: 'Home', erros: req.flash("erros")});
+    };
+
     static async cadastroFuncionario(req, res) {
         res.status(200).render("admin/cadastrar-funcionario", { title: "Cadastro funcionário", erros: req.flash("erros")});        
     };  
@@ -16,7 +50,7 @@ module.exports = class FuncionarioController {
             ativo = true;
         } else if (ativo == 'false'){
             ativo = false;
-        }
+        };
         const validado = {
             matricula: req.body.matricula,
             nome: toTitleCase(req.body.nome),
@@ -25,7 +59,7 @@ module.exports = class FuncionarioController {
             cpf: req.body.cpf,
             funcao: req.body.funcao,
             setor: req.body.setor,
-            cargaHorariaSemanal: req.body.cargahorariasemanal,
+            cargahorariasemanal: req.body.cargahorariasemanal,
             ativo: ativo            
         };
         const erros = validarFuncionario(validado, 'cadastro');          
@@ -65,7 +99,6 @@ module.exports = class FuncionarioController {
             cargahorariasemanal: req.body.cargahorariasemanal,
             ativo: ativo
         };     
-        
         const erros = validarFuncionario(validado, 'alteracao');     
         const salt = bcrypt.genSaltSync(10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);        
@@ -80,11 +113,10 @@ module.exports = class FuncionarioController {
             req.flash("erros", erros);
             return  res.status(200).redirect(`/admin/alterarfuncionario/${req.body.matricula}`);
         };        
-        
 
-        await Funcionarios.update(validado, {where: {matricula: req.body.id}}).then(res.status(200).redirect("/admin/home"))
-    .catch(err => {
-        console.log(err);
-    }          
-    );};
+        await Funcionarios.update(validado, {where: {matricula: req.body.id}}).then(() => res.status(200).redirect("/admin/home"))
+        .catch(err => {
+            console.log(err);
+        }         
+        );};
 };

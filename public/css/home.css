@@ -1,5 +1,5 @@
 .main__home{
-    height: calc(100vh - 95px);
+    height: calc(100vh - 8.38em);
 }
 .tabela__funcionario{
     margin: 5px 10px 0 10px;
@@ -7,5 +7,6 @@
     text-align: center;
 }
 .h1__funcionario{
-    margin-left: 10px;
+    margin-top: 4rem;
+    margin-left: .8rem;
 }

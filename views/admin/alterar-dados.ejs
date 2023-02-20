@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,18 +17,18 @@
         </div>
         <%} %>
       <div class="main__home__div">
-      <h1 class="h1__funcionario">Alterar funcionário</h1>
+      <h1 class="h1__funcionario">Alterar admin</h1>
       <form action="/admin/alteracaoDados" method="post" class="forms">
-        <input type="hidden" id="id" name="id" value="<%= user.id %>">
-        <label for="idAtual">Matrícula</label>
-        <input type="text" class="forms-input" name="idAtual" id="idAtual" value="<%= user.id %>" placeholder="Deixe em branco para gerar automaticamente">
+        <input type="hidden" id="idAtual" name="idAtual" value="<%= user.id %>">
+        <label for="idAtual">Id</label>
+        <input type="text" class="forms-input" name="id" id="id" value="<%= user.id %>" placeholder="Deixe em branco para gerar automaticamente">
         <label for="email">Email</label>
         <input type="email" class="forms-input" name="email" id="email" value="<%= user.email %>" placeholder="Email">
         <label for="senha">Senha</label>
         <input type="password"class="forms-input" name="senha" id="senha" placeholder="Senha(Ele poderá alterar depois)">
        
         <br>
-        <input type="submit" class="forms-input" value="Alterar funcionario">
+        <input type="submit" class="forms-input" value="Alterar dados">
       </form>
     </div>
     </main>

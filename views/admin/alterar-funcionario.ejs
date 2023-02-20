@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -29,13 +29,13 @@
         <label for="senha">Senha</label>
         <input type="password"class="forms-input" name="senha" id="senha" placeholder="Senha(Ele poderá alterar depois)">
         <label for="cpf">CPF</label>
-        <input type="tel" class="forms-input" name="cpf" id="cpf" value="<%= funcionario.cpf %>" placeholder="CPF">
+        <input type="tel" class="forms-input" name="cpf" id="cpf" minlength="11" maxlength="11" value="<%= funcionario.cpf %>" placeholder="CPF">
         <label for="funcao">Função</label>
         <input type="text" class="forms-input" name="funcao" id="funcao" value="<%= funcionario.funcao %>"placeholder="Função">
         <label for="setor">Setor</label>
         <input type="text" class="forms-input" name="setor" id="setor" value="<%= funcionario.setor %>" placeholder="Setor">
         <label for="cargahorariasemanal">Carga Horaria Semanal</label>
-        <input type="tel" class="forms-input" minlength="0" value="<%= funcionario.cargahorariasemanal %>" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número">
+        <input type="tel" class="forms-input" minlength="0" maxlength="44" value="<%= funcionario.cargahorariasemanal %>" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número">
         <label for="ativo">Ativo</label>
         <%if(funcionario.ativo === true){ %> 
           <select class="forms-input" name="ativo" id="ativo">

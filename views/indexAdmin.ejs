@@ -15,12 +15,12 @@
         <p><b><% for(erro of erros) {%> <%= erro.error %> <% } %></b></p>       
       </div>
       <%} %>
-      <%if(qtdFuncionarios!=0) { %> 
+      <%if(qtdUsuarios!=0) { %> 
         <div class="pagina__inicial">
           <div class="mostrar__logo">           
             <div class="mostrar__logo-horario">
               <div class="time__home">
-              <img style="height: 7rem;" src="/assets/esse.png" alt="Logo">
+              <img class="header__nav__ul-image" style="height: 7rem;" src="/assets/esse.png" alt="Logo">
                 <div class="borda">
                   <time id="dia"></time>
                 </div>
@@ -32,7 +32,7 @@
           </div>
           <div class="forms__inicio">
             <h2>Login</h2>
-            <form action="/login" method="post" class="forms">
+            <form action="/admin/login" method="post" class="forms">
               <label for="email">Email:</label>
               <input name="email" id="email" type="email" placeholder="Insira o seu email" required/>
               <label for="senha">Senha:</label>
@@ -60,7 +60,15 @@
                   </div>
                 </div>
                 <div class="forms__inicio">
-                    <h2>Não há nenhum funcionário cadastrado<br> <a href="/admin">Cadastre agora</a></h2>              
+                    <h2>Criar conta</h2>
+                    <form action="/admin/criarUsuario" method="post" class="forms">
+                        <label for="email">Email: </label>
+                        <input name="email" id="email" type="email" placeholder="Insira o seu email" required>
+                        <label for="senha">Senha: </label>
+                        <input type="password" name="senha" id="senha"  placeholder="Insira a sua senha" required>
+                        <br>                   
+                        <input type="submit" value="Criar conta">
+                    </form>                  
                 </div>
               </div>  
             <% }      

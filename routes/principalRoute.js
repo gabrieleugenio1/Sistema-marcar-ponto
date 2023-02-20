@@ -4,7 +4,8 @@ const PrincipalController = require('../controllers/PrincipalController');
 const router = express.Router();
 
 router
-      .get('/', PrincipalController.principal)
+      .get('/admin', PrincipalController.principal)
+      .get('/', PrincipalController.principalFuncionario)
       .get('/esqueci-senha', PrincipalController.esqueciSenha)
       
 
