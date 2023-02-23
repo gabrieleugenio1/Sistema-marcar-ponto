@@ -7,12 +7,6 @@ module.exports = class FuncionarioController {
     static async login(req,res) {
         email = req.body.email;
         senha = req.body.senha;
-        const erros = validarFuncionario(validado, 'cadastro');
-        if (erros.length > 0){
-            req.flash("erros", erros);
-            return  res.status(200).redirect("/");
-        };
-
         await Funcionarios.findOne({ where: { email: email} }).then(employee => {
             {
               if (employee != undefined) {
@@ -26,21 +20,20 @@ module.exports = class FuncionarioController {
               } else {
                 erros.push({ error:"Email ou senha invalidos."});
                 req.flash("erros", erros);
-                res.redirect("/");
+                return res.redirect("/");
               };
             };
           });
 
-
-        res.status(200).redirect("/funcionario/home");
+        return  res.status(200).redirect("/funcionario/home");
     };
 
     static async index (req,res) {
-        res.status(200).render('/funcionario/home', {title: 'Home', erros: req.flash("erros")});
+        return res.status(200).render('/funcionario/home', {title: 'Home', erros: req.flash("erros")});
     };
 
     static async cadastroFuncionario(req, res) {
-        res.status(200).render("admin/cadastrar-funcionario", { title: "Cadastro funcionário", erros: req.flash("erros")});        
+        return  res.status(200).render("admin/cadastrar-funcionario", { title: "Cadastro funcionário", erros: req.flash("erros")});       
     };  
 
     static async cadastrarFuncionario(req, res) {
@@ -72,15 +65,16 @@ module.exports = class FuncionarioController {
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);
         validado.senha=senhaCriptografada;     
         await Funcionarios.create(validado).then(() =>
-           res.status(200).redirect("/admin/home")
+        res.status(200).redirect("/admin/home")
         );
     };
           
     static async alterarFuncionario (req, res) {
         await Funcionarios.findByPk(req.params.id).then( employee =>{
-            res.status(200).render("admin/alterar-funcionario", { title: "Alterar funcionário",funcionario: employee ,erros: req.flash("erros")});  
+        return res.status(200).render("admin/alterar-funcionario", { title: "Alterar funcionário",funcionario: employee ,erros: req.flash("erros")});  
         });
     };
+
     static async alteracaoFuncionario (req, res) {
         let ativo = req.body.ativo;        
         if (ativo == 'true'){
@@ -118,5 +112,6 @@ module.exports = class FuncionarioController {
         .catch(err => {
             console.log(err);
         }         
-        );};
+        );
+    };
 };

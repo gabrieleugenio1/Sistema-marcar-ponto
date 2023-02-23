@@ -1,5 +1,6 @@
 const { Usuario, Funcionarios } = require('../models/indexDB');
 const validarAdmin = require('../functions/validarAdmin');
+const Autenticacao = require('../middleware/Autenticacao');
 const bcrypt = require("bcrypt");
 
 module.exports = class UsuarioController {
@@ -27,7 +28,7 @@ module.exports = class UsuarioController {
             res.redirect("/admin");
         });};
 
-    static async login (req, res) {
+    static async login (req, res) { 
         let erros = [];
         let email = req.body.email;
         let senha = req.body.senha;
@@ -35,11 +36,12 @@ module.exports = class UsuarioController {
             {
               if (usuario != undefined) {
                 if (bcrypt.compareSync(senha, usuario.senha)) {
-                 /* req.session.usuario = {
-                    id: usuario.id,
-                    email: usuario.email
-                  };*/
-                  return res.redirect("admin/home");
+                    const token = Autenticacao.gerarToken(usuario, "Admin");
+                    res.cookie("token", token, {
+                      httpOnly: true,
+                    })
+                    console.log('Você está logado com e-mail e senha\n', token);
+                    return res.redirect("/admin/home");
                 } else {
                     erros.push({ error:"Email ou senha invalidos."});
                     req.flash("erros", erros);
@@ -65,14 +67,14 @@ module.exports = class UsuarioController {
                 cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
                 funcionario.cpf=cpf;    
             });                     
-            res.status(200).render('/admin/home', {title: "Home", funcionarios: employees});
+         return res.status(200).render('./admin/home', {title: "Home", funcionarios: employees});
         });
     };
 
     static async alterarDados (req, res)  {
         await Usuario.findAll().then(user => {
             console.log(user[0]);
-            res.status(200).render('/admin/alterar-dados', {title: "Alterar conta",user:user[0] ,erros: req.flash("erros")});
+            res.status(200).render('./admin/alterar-dados', {title: "Alterar conta",user:user[0] ,erros: req.flash("erros")});
         });
     };
 

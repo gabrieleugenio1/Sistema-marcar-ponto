@@ -4,6 +4,8 @@ const routes = require('../routes');
 const flash = require("connect-flash");
 const session = require("express-session");
 const robots = require('express-robots-txt');
+const cookieParser = require('cookie-parser')
+
 //Editar depois - const jwt = require("jsonwebtoken");
 
 function configExpress(express, app) {
@@ -19,6 +21,7 @@ function configExpress(express, app) {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   app.use(flash());
+  app.use(cookieParser());
   Conexao.authenticate();
 
   //Session
