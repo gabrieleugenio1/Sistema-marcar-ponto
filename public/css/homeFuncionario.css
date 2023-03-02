@@ -1,0 +1,17 @@
+.forms input[type='submit']{
+    width: 50%;
+    height: 3rem;
+    color: var(--var-cor-6);
+}
+.forms input[type='submit']:hover{
+    color: #c91a1a
+}
+.forms{
+    width: 100%;
+}
+.main__home{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    width: 100vw;
+}

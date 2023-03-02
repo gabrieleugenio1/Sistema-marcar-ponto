@@ -1,16 +1,23 @@
 const bcrypt = require("bcrypt");
-const {Funcionarios} = require("../models/indexDB");
+const { Funcionarios, Pontos } = require("../models/indexModels");
 const validarFuncionario = require('../functions/validarFuncionario');
 const toTitleCase = require('../functions/nameTitle');
+const Autenticacao = require('../middleware/Autenticacao');
 
 module.exports = class FuncionarioController {
-    static async login(req,res) {
-        email = req.body.email;
-        senha = req.body.senha;
+    static async login(req, res) {
+        res.clearCookie('token');
+        const {email, senha} = req.body;
+        const erros = [];
         await Funcionarios.findOne({ where: { email: email} }).then(employee => {
             {
               if (employee != undefined) {
                 if (bcrypt.compareSync(senha, employee.senha)) {
+                  const token = Autenticacao.gerarToken(employee);
+                  res.cookie("token", token, {
+                      httpOnly: true,
+                    });
+                    console.log(token)
                   return res.redirect("/funcionario/home");
                 } else {
                     erros.push({ error:"Email ou senha invalidos."});
@@ -24,12 +31,12 @@ module.exports = class FuncionarioController {
               };
             };
           });
-
-        return  res.status(200).redirect("/funcionario/home");
     };
 
     static async index (req,res) {
-        return res.status(200).render('/funcionario/home', {title: 'Home', erros: req.flash("erros")});
+        const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
+        const qtdPontos = await Pontos.count({where: {data:finalDate, funcionarioMatricula: req.userId }});
+        return res.status(200).render('./funcionario/home', {title: 'Home', erros: req.flash("erros"), presenca: qtdPontos});
     };
 
     static async cadastroFuncionario(req, res) {
@@ -111,7 +118,27 @@ module.exports = class FuncionarioController {
         await Funcionarios.update(validado, {where: {matricula: req.body.id}}).then(() => res.status(200).redirect("/admin/home"))
         .catch(err => {
             console.log(err);
-        }         
-        );
+        });
+    };
+
+    static async registraPonto(req, res) {
+        let tipo;
+        const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
+        const quantidade = await Pontos.count({where: {data:finalDate, funcionarioMatricula: req.userId }});
+        if(quantidade == 0){
+            console.log("Primeira entrada no dia",finalDate);
+            tipo = "Entrada";
+        }else if(quantidade == 1){
+            console.log("Houve uma entrada no dia",finalDate);
+            tipo = "Saida"
+        }else if(quantidade >= 2){
+            console.log("Jà teve uma entrada e saída")
+            return res.redirect('/funcionario/home');
+        }
+
+        console.log(quantidade)
+        console.log( finalDate)
+        await Pontos.create({tipo: tipo, funcionarioMatricula: req.userId }).then(()=>{
+        }).catch(err => console.log(err));  
     };
 };

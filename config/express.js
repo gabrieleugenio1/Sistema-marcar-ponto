@@ -2,18 +2,16 @@
 const { Conexao } = require('../db/Conexao');
 const routes = require('../routes');
 const flash = require("connect-flash");
-const session = require("express-session");
 const robots = require('express-robots-txt');
 const cookieParser = require('cookie-parser')
-
-//Editar depois - const jwt = require("jsonwebtoken");
+const session = require("express-session");
 
 function configExpress(express, app) {
   //Robots
-  app.use(robots({
-    UserAgent: '*',
-    Disallow: '/'
-  }))
+app.use(robots({
+  UserAgent: '*',
+  Disallow: '/'
+}))
 
   //Configurando express
   app.set("view engine", "ejs");
@@ -25,12 +23,11 @@ function configExpress(express, app) {
   Conexao.authenticate();
 
   //Session
-  app.use(session({
-    secret:"dj!2@#5ASGFASAD@Q#Wf@##@s",
+   app.use(session({
+    secret:process.env.SECRET_SESSION,
     resave:false,
     saveUninitialized:true    
-  })); 
-
+  }));
 
   //Rotas
   routes(app);

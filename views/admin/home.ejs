@@ -47,7 +47,7 @@
             <td><%= funcionario.setor.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
             <td><%= funcionario.cpf %></td>
             <td><%= funcionario.cargahorariasemanal %>h</td>
-            <td>aaa</td>
+            <td><%= funcionario['pontos.id'] ? funcionario['pontos.data']: "Nenhuma" %></td>
             <td>aa</td>
             <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
             <td><%= funcionario.ativo===true ? "Sim" : "Não" %></td>     

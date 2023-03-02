@@ -1,5 +1,4 @@
-const bcrypt = require("bcrypt");
-const {Usuario,Funcionarios} = require("../models/indexDB");
+const {Usuario, Funcionarios} = require("../models/indexModels");
 
 
 module.exports = class PrincipalController {

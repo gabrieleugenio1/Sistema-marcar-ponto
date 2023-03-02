@@ -8,7 +8,7 @@ router
       .get('/admin' ,PrincipalController.principal)
       .get('/', PrincipalController.principalFuncionario)
       .get('/esqueci-senha', PrincipalController.esqueciSenha)
-      .get('/logout', Autenticacao.verificaTokenAdmin, PrincipalController.logout)
+      .get('/logout', Autenticacao.verificaToken, PrincipalController.logout)
       
 
 

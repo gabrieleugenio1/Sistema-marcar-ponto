@@ -1,4 +1,4 @@
-const { Usuario, Funcionarios } = require('../models/indexDB');
+const { Usuario, Funcionarios, Pontos } = require('../models/indexModels');
 const validarAdmin = require('../functions/validarAdmin');
 const Autenticacao = require('../middleware/Autenticacao');
 const bcrypt = require("bcrypt");
@@ -29,6 +29,7 @@ module.exports = class UsuarioController {
         });};
 
     static async login (req, res) { 
+        res.clearCookie('token');
         let erros = [];
         let email = req.body.email;
         let senha = req.body.senha;
@@ -39,7 +40,7 @@ module.exports = class UsuarioController {
                     const token = Autenticacao.gerarToken(usuario, "Admin");
                     res.cookie("token", token, {
                       httpOnly: true,
-                    })
+                    });
                     console.log('Você está logado com e-mail e senha\n', token);
                     return res.redirect("/admin/home");
                 } else {
@@ -53,19 +54,26 @@ module.exports = class UsuarioController {
                 res.redirect("/admin");
               };
             };
-          });
+        });
     };
 
     static async home (req, res)  {
-        await Funcionarios.findAll().then(employees =>{
-            employees.forEach(funcionario => {
+        await Funcionarios.findAll({
+            raw: true,
+            include: [{
+                model: Pontos, 
+                group: ['matricula'],
+                order: [ [ 'tipo', 'ASC' ]]
+    }]}).then((employees) =>{
+            employees.forEach((funcionario) => {
                 let cpf = funcionario.cpf;
                 let parteA = cpf.substring(0,3);
                 let parteB = cpf.substring(3,6);
                 let parteC = cpf.substring(6,9);
                 let parteD = cpf.substring(9,11);
                 cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
-                funcionario.cpf=cpf;    
+                funcionario.cpf=cpf;   
+                console.log(funcionario)
             });                     
          return res.status(200).render('./admin/home', {title: "Home", funcionarios: employees});
         });
@@ -101,7 +109,7 @@ module.exports = class UsuarioController {
             req.flash("erros", erros);
             return  res.status(200).redirect(`/admin/alterardados`);
         };   
-        await Usuario.update(validado, {where:{id: req.body.idAtual}}).then(user => {
+        await Usuario.update(validado, {where: {id: req.body.idAtual}}).then(user => {
             res.status(200).redirect('/admin/home');
         });
     };

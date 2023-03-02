@@ -27,12 +27,13 @@ const Pontos = Conexao.define("pontos", {
 }, { timestamps: false });
 
 Funcionarios.hasMany(Pontos, {
-    foreignKey: { allowNull: false },
+    foreignKey: 'funcionarioMatricula',
+    foreignKey: { allowNull: false } ,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE'
 });
 
-Pontos.belongsTo(Funcionarios);
+Pontos.belongsTo(Funcionarios, {foreignKey: 'funcionarioMatricula'});
 
 Pontos.sync({ force: false });
 module.exports = Pontos;

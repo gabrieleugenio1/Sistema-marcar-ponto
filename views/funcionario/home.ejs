@@ -7,55 +7,37 @@
     <link rel="stylesheet" href="../css/reset.css"/>
     <link rel="stylesheet" href="../css/main.css"/>
     <link rel="stylesheet" href="../css/home.css"/> 
+    <link rel="stylesheet" href="../css/homeFuncionario.css"/> 
+    <script src="../js/buttonDisable.js"></script>
   </head>
   <body>
-    <%- include("../partials/header"); %>
+    <%- include("../partials/headerFuncionario"); %>
     <main class="main__home">
-      <h1 class="h1__funcionario">Funcionários</h1>
-      <table class="tabela__funcionario" border="1">
-        <thead>
-        <tr>
-            <th>Matrícula</th>
-            <th>Funcionário</th>
-            <th>Função</th>
-            <th>Setor</th>
-            <th>CPF</th>
-            <th>Carga Horaria Semanal</th>
-            <th>Última Entrada</th>
-            <th>Última Saída</th>
-            <th>Editar</th>
-            <th>Ativo</th>
-        </tr>
-        </thead>
-        <tbody>
-          <td>000000</td>
-          <td>Gabriel</td>
-          <td>Programador</td>
-          <td>01</td>
-          <td>000.000.000-83</td>
-          <td>44h</td>
-          <td>14/02/2023 08:00h</td>
-          <td>14/02/2023 18:00h</td>
-          <td><a href="#">Alterar</a></td>
-          <td>Não</td> 
-          <% for(funcionario of funcionarios) {%> 
-            <tr>  
-         
-            <td><%= funcionario.matricula %></td>
-            <td><%= funcionario.nome.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
-            <td><%= funcionario.funcao.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
-            <td><%= funcionario.setor.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
-            <td><%= funcionario.cpf %></td>
-            <td><%= funcionario.cargahorariasemanal %>h</td>
-            <td>aaa</td>
-            <td>aa</td>
-            <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
-            <td><%= funcionario.ativo===true ? "Sim" : "Não" %></td>     
-           
-        </tr>
-        <% } %>  %>
-        </tbody>
-     </table>
+      <% if (presenca == 0 ) { %>
+      <div class="forms__inicio forms">
+        <h2>Registro de presença</h2>
+        <form action="/funcionario/registraPonto" method="post" class="forms">
+          <input class="forms__inicio__botao" type="submit" value="Entrar" />
+        </form>           
+      </div>
+    </div>
+    <% }else if (presenca == 1 ) {%>          
+      <div class="forms__inicio forms">
+        <h2>Registro de presença</h2>
+        <form action="/funcionario/registraPonto" method="post" class="forms">
+          <input class="forms__inicio__botao" type="submit" value="Sair" />
+        </form>           
+      </div>
+    </div>
+      <%} else if (presenca == 2) {%> 
+        <div class="forms__inicio forms">
+          <h2>Registro de presença</h2>
+          <form action="/funcionario/registraPonto" method="post" class="forms">
+            <input class="forms__inicio__botao" type="submit" id='submit' value="Parabéns! Você finalizou o seu dia concluído" disabled/>
+          </form>           
+        </div>
+      </div>
+        <%} %>       
     </main>
   </body>
 </html>
