@@ -139,6 +139,7 @@ module.exports = class FuncionarioController {
         console.log(quantidade)
         console.log( finalDate)
         await Pontos.create({tipo: tipo, funcionarioMatricula: req.userId }).then(()=>{
+            return res.redirect('/funcionario/home');
         }).catch(err => console.log(err));  
     };
 };
