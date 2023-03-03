@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { Funcionarios, Pontos } = require("../models/indexModels");
+const { Funcionarios, Pontos, Sequelize } = require("../models/indexModels");
 const validarFuncionario = require('../functions/validarFuncionario');
 const toTitleCase = require('../functions/nameTitle');
 const Autenticacao = require('../middleware/Autenticacao');
@@ -35,7 +35,9 @@ module.exports = class FuncionarioController {
 
     static async index (req,res) {
         const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
-        const qtdPontos = await Pontos.count({where: {data:finalDate, funcionarioMatricula: req.userId }});
+        let qtdPontos = await Pontos.count({where: {dataEntrada:finalDate, funcionarioMatricula: req.userId }});
+        qtdPontos += await Pontos.count({where: {dataSaida:finalDate, funcionarioMatricula: req.userId }});
+        console.log(qtdPontos)
         return res.status(200).render('./funcionario/home', {title: 'Home', erros: req.flash("erros"), presenca: qtdPontos});
     };
 
@@ -122,24 +124,23 @@ module.exports = class FuncionarioController {
     };
 
     static async registraPonto(req, res) {
-        let tipo;
         const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
-        const quantidade = await Pontos.count({where: {data:finalDate, funcionarioMatricula: req.userId }});
-        if(quantidade == 0){
-            console.log("Primeira entrada no dia",finalDate);
-            tipo = "Entrada";
-        }else if(quantidade == 1){
-            console.log("Houve uma entrada no dia",finalDate);
-            tipo = "Saida"
-        }else if(quantidade >= 2){
-            console.log("Jà teve uma entrada e saída")
-            return res.redirect('/funcionario/home');
-        }
-
+        let quantidade = await Pontos.count({where: {dataEntrada:finalDate, funcionarioMatricula: req.userId }});
+        quantidade += await Pontos.count({where: {dataSaida:finalDate, funcionarioMatricula: req.userId }});
+        console.log(Sequelize.NOW())
         console.log(quantidade)
-        console.log( finalDate)
-        await Pontos.create({tipo: tipo, funcionarioMatricula: req.userId }).then(()=>{
-            return res.redirect('/funcionario/home');
-        }).catch(err => console.log(err));  
+        if(quantidade == 0){
+            console.log("Primeira entrada no dia", finalDate);
+            return await Pontos.create({dataEntrada: Sequelize.fn('NOW'), horarioEntrada: Sequelize.fn('NOW'), funcionarioMatricula: req.userId }).then(()=>{
+                return res.redirect('/funcionario/home');
+            }).catch(err => console.log(err));  
+        }else if(quantidade == 1){
+            console.log("Houve uma entrada no dia", finalDate);
+            return await Pontos.update({dataSaida: Sequelize.fn('NOW'), horarioSaida: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}).then(()=>{
+                return res.redirect('/funcionario/home');
+            }).catch(err => console.log(err));  
+        }
+        console.log("Já teve uma entrada e saída")
+        return res.redirect('/funcionario/home');
     };
 };

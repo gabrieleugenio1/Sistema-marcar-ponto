@@ -1,6 +1,5 @@
 const {Usuario, Funcionarios} = require("../models/indexModels");
 
-
 module.exports = class PrincipalController {
     static async  principal  (req, res) {
         const user = await Usuario.count();

@@ -35,7 +35,7 @@
         <label for="setor">Setor</label>
         <input type="text" class="forms-input" name="setor" id="setor" value="<%= funcionario.setor %>" placeholder="Setor">
         <label for="cargahorariasemanal">Carga Horaria Semanal</label>
-        <input type="tel" class="forms-input" minlength="0" maxlength="44" value="<%= funcionario.cargahorariasemanal %>" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número">
+        <input type="number" class="forms-input" value="<%= funcionario.cargahorariasemanal %>" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número" min="0" max="44" >
         <label for="ativo">Ativo</label>
         <%if(funcionario.ativo === true){ %> 
           <select class="forms-input" name="ativo" id="ativo">

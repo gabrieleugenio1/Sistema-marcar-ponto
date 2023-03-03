@@ -38,20 +38,18 @@
           <td>14/02/2023 18:00h</td>
           <td><a href="#">Alterar</a></td>
           <td>Não</td> 
-          <% for(funcionario of funcionarios) {%> 
-            <tr>  
-         
+          <% for(funcionario of funcionarios) { %> 
+          <tr>           
             <td><%= funcionario.matricula %></td>
             <td><%= funcionario.nome.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
             <td><%= funcionario.funcao.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
             <td><%= funcionario.setor.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
             <td><%= funcionario.cpf %></td>
             <td><%= funcionario.cargahorariasemanal %>h</td>
-            <td><%= funcionario['pontos.id'] ? funcionario['pontos.data']: "Nenhuma" %></td>
-            <td>aa</td>
+            <td><%= funcionario['pontos.dataEntrada'] ? funcionario['pontos.dataEntrada'] +' - '+funcionario['pontos.horarioEntrada']+'h': "Nenhuma" %></td>
+            <td><%= funcionario['pontos.dataSaida'] ? funcionario['pontos.dataSaida'] +' - '+funcionario['pontos.horarioSaida']+'h': "Nenhuma" %></td>
             <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
-            <td><%= funcionario.ativo===true ? "Sim" : "Não" %></td>     
-           
+            <td><%= funcionario.ativo == 1 ? "Sim" : "Não" %></td>     
         </tr>
         <% } %>  %>
         </tbody>

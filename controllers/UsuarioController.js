@@ -1,4 +1,4 @@
-const { Usuario, Funcionarios, Pontos } = require('../models/indexModels');
+const { Usuario, Funcionarios, Pontos, Sequelize } = require('../models/indexModels');
 const validarAdmin = require('../functions/validarAdmin');
 const Autenticacao = require('../middleware/Autenticacao');
 const bcrypt = require("bcrypt");
@@ -59,12 +59,18 @@ module.exports = class UsuarioController {
 
     static async home (req, res)  {
         await Funcionarios.findAll({
-            raw: true,
-            include: [{
-                model: Pontos, 
-                group: ['matricula'],
-                order: [ [ 'tipo', 'ASC' ]]
-    }]}).then((employees) =>{
+                raw: true,            
+                include: [{
+                attributes:[
+                    "id",
+                    [Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y'), 'dataEntrada'],
+                    [Sequelize.fn('date_format', Sequelize.col('horarioEntrada'), '%H:%i'), 'horarioEntrada'],
+                    [Sequelize.fn('date_format', Sequelize.col('dataSaida'), '%d/%m/%Y'), 'dataSaida'],
+                    [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
+                    "funcionarioMatricula"
+                ],
+                model: Pontos,             
+    }],group: ['funcionarioMatricula']}).then((employees) =>{
             employees.forEach((funcionario) => {
                 let cpf = funcionario.cpf;
                 let parteA = cpf.substring(0,3);
@@ -73,7 +79,9 @@ module.exports = class UsuarioController {
                 let parteD = cpf.substring(9,11);
                 cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
                 funcionario.cpf=cpf;   
-                console.log(funcionario)
+                let a = 0
+
+                console.log( funcionario)
             });                     
          return res.status(200).render('./admin/home', {title: "Home", funcionarios: employees});
         });

@@ -7,23 +7,19 @@ const Pontos = Conexao.define("pontos", {
         autoIncrement: true,
         primaryKey: true
     },
-    data:{
+    dataEntrada:{
         type:Sequelize.DATEONLY,
-        allowNull: false,
-        defaultValue: Sequelize.NOW,
     },
-    horario: {
+    horarioEntrada: {
         type: Sequelize.TIME,
-        allowNull: false,
-        defaultValue: Sequelize.NOW,
-        validate: {
-            isDate: true
-        }
     },
-    tipo: {
-        type: Sequelize.ENUM('Entrada', 'Saida'),
-        allowNull: false
-    }
+    dataSaida:{
+        type:Sequelize.DATEONLY,
+    },
+    horarioSaida: {
+        type: Sequelize.TIME,
+    },
+
 }, { timestamps: false });
 
 Funcionarios.hasMany(Pontos, {

@@ -5,7 +5,7 @@ module.exports = class Autenticacao{
 
     static gerarToken(user, tipoConta){
         const payload = {userId: user.id ? user.id : user.matricula, tipoConta: tipoConta ? tipoConta : "Funcionario"};
-        const options = {expiresIn: '1d'};
+        const options = {expiresIn: '2h'};
         return jwt.sign(payload, secret, options);
     } 
 
