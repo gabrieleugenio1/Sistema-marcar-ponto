@@ -4,67 +4,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= title %></title>
-    <link rel="stylesheet" href="./css/reset.css"/>
-    <link rel="stylesheet" href="./css/main.css"/>
-    <link rel="stylesheet" href="./css/pagina-inicial.css"/> 
+    <link rel="stylesheet" href="./css/reset.css" />
+    <link rel="stylesheet" href="./css/main.css" />
+    <link rel="stylesheet" href="./css/pagina-inicial.css" />
   </head>
   <body>
     <main>
       <%if(erros.length > 0){ %>
-      <div class="alert danger">       
-        <p><b><% for(erro of erros) {%> <%= erro.error %> <% } %></b></p>       
+      <div class="alert danger">
+        <p><b><% for(erro of erros) {%> <%= erro.error %> <% } %></b></p>
       </div>
-      <%} %>
-      <%if(qtdFuncionarios!=0) { %> 
-        <div class="pagina__inicial">
-          <div class="mostrar__logo">           
-            <div class="mostrar__logo-horario">
-              <div class="time__home">
-              <img style="height: 7rem;" src="/assets/esse.png" alt="Logo">
-                <div class="borda">
-                  <time id="dia"></time>
-                </div>
-                <div class="time">
-                  <time id="time"></time>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="forms__inicio">
-            <h2>Login Funcionário</h2>
-            <form action="/login" method="post" class="forms">
-              <label for="email">Email:</label>
-              <input name="email" id="email" type="email" placeholder="Insira o seu email" required/>
-              <label for="senha">Senha:</label>
-              <input name="senha" id="senha" type="password" placeholder="Insira a sua senha" required/>
-              <br>
-              <input class="forms__inicio__botao" type="submit" value="Entrar" />
-            </form>           
-            <small><a href="/esqueci-senha">Esqueceu a senha?</a></small>
-          </div>
-        </div>       
-        
-        <%}else {%> 
-            <div class="pagina__inicial">
-                <div class="mostrar__logo">
-                  <div class="mostrar__logo-horario">
-                    <div class="time__home">
-                      <img style="height: 7rem;" src="/assets/esse.png" alt="Logo">
-                      <div class="borda">
-                        <time id="dia"></time>
-                      </div>
-                      <div class="time">
-                        <time id="time"></time>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="forms__inicio">
-                    <h2>Não há nenhum funcionário cadastrado<br> <a href="/admin">Cadastre agora</a></h2>              
-                </div>
-              </div>  
-            <% }      
-        %>
+      <%} %> <%if(qtdFuncionarios!=0) { %> <%- include("./partials/tempo"); %>
+      <div class="forms__inicio">
+        <h2>Login Funcionário</h2>
+        <form action="/login" method="post" class="forms">
+          <label for="email">Email:</label>
+          <input
+            name="email"
+            id="email"
+            type="email"
+            placeholder="Insira o seu email"
+            required
+          />
+          <label for="senha">Senha:</label>
+          <input
+            name="senha"
+            id="senha"
+            type="password"
+            placeholder="Insira a sua senha"
+            required
+          />
+          <br />
+          <input class="forms__inicio__botao" type="submit" value="Entrar" />
+        </form>
+        <small><a href="/esqueci-senha">Esqueceu a senha?</a></small>
+      </div>
+
+      <%}else {%> <%- include("./partials/tempo"); %>
+      <div class="forms__inicio">
+        <h2>
+          Não há nenhum funcionário cadastrado<br />
+          <a href="/admin">Cadastre agora</a>
+        </h2>
+      </div>
+      <% } %>
     </main>
     <script src="./js/refreshTime.js"></script>
   </body>

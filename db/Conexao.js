@@ -1,4 +1,4 @@
-const Sequelize = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 
 const Conexao = new Sequelize(process.env.DATABASE, process.env.DB_NOME, process.env.DB_SENHA, {
   host: process.env.DB_HOST,
@@ -12,4 +12,4 @@ const Conexao = new Sequelize(process.env.DATABASE, process.env.DB_NOME, process
   }
 });
 
-module.exports = { Sequelize, Conexao };
+module.exports = { Sequelize, Conexao, DataTypes };

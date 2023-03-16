@@ -1,48 +1,52 @@
-const { Sequelize, Conexao } = require('../db/Conexao');
+const { DataTypes, Conexao } = require('../db/Conexao');
 
 const Funcionarios = Conexao.define("funcionarios", {
     matricula: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     nome: {
-        type: Sequelize.STRING(130),
+        type: DataTypes.STRING(130),
         allowNull: false
     },
     email: {
-        type: Sequelize.STRING(150),
+        type: DataTypes.STRING(150),
         allowNull: false,
         unique: true,
         validate: {
             isEmail: true
-        }
+        },
     },
     senha: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             min: 6
-        }
+        },
     },
     cpf:{
-        type:Sequelize.STRING(15),
+        type: DataTypes.STRING(15),
         allowNull:false
     },
     funcao: {
-        type: Sequelize.STRING(130),
+        type: DataTypes.STRING(130),
         allowNull: false
     },
     setor: {
-        type: Sequelize.STRING(50),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     cargahorariasemanal: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            min: 0, 
+            max: 44,   
+        },
     },
     ativo: {
-        type: Sequelize.BOOLEAN,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true
     }

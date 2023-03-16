@@ -1,23 +1,23 @@
-const { Sequelize, Conexao } = require('../db/Conexao');
+const { DataTypes, Conexao } = require('../db/Conexao');
 const Funcionarios = require('./Funcionarios');
 
 const Pontos = Conexao.define("pontos", {
     id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
     },
     dataEntrada:{
-        type:Sequelize.DATEONLY,
+        type:DataTypes.DATEONLY,
     },
     horarioEntrada: {
-        type: Sequelize.TIME,
+        type: DataTypes.TIME,
     },
     dataSaida:{
-        type:Sequelize.DATEONLY,
+        type:DataTypes.DATEONLY,
     },
     horarioSaida: {
-        type: Sequelize.TIME,
+        type: DataTypes.TIME,
     },
 
 }, { timestamps: false });
