@@ -42,16 +42,16 @@ module.exports = class UsuarioController {
                       httpOnly: true,
                     });
                     console.log('Você está logado com e-mail e senha\n', token);
-                    return res.redirect("/admin/home");
+                    return res.status(200).redirect("/admin/home");
                 } else {
                     erros.push({ error:"Email ou senha invalidos."});
                     req.flash("erros", erros);
-                  return res.redirect("/admin");
+                  return res.status(200).redirect("/admin");
                 };
               } else {
                 erros.push({ error:"Email ou senha invalidos."});
                 req.flash("erros", erros);
-                res.redirect("/admin");
+                res.status(200).redirect("/admin");
               };
             };
         });

@@ -127,20 +127,18 @@ module.exports = class FuncionarioController {
         const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
         let quantidade = await Pontos.count({where: {dataEntrada:finalDate, funcionarioMatricula: req.userId }});
         quantidade += await Pontos.count({where: {dataSaida:finalDate, funcionarioMatricula: req.userId }});
-        console.log(Sequelize.NOW())
-        console.log(quantidade)
         if(quantidade == 0){
             console.log("Primeira entrada no dia", finalDate);
             return await Pontos.create({dataEntrada: Sequelize.fn('NOW'), horarioEntrada: Sequelize.fn('NOW'), funcionarioMatricula: req.userId }).then(()=>{
-                return res.redirect('/funcionario/home');
+                return res.status(200).redirect('/funcionario/home');
             }).catch(err => console.log(err));  
         }else if(quantidade == 1){
             console.log("Houve uma entrada no dia", finalDate);
             return await Pontos.update({dataSaida: Sequelize.fn('NOW'), horarioSaida: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}).then(()=>{
-                return res.redirect('/funcionario/home');
+                return res.status(200).redirect('/funcionario/home');
             }).catch(err => console.log(err));  
         }
         console.log("Já teve uma entrada e saída")
-        return res.redirect('/funcionario/home');
+        return res.status(200).redirect('/funcionario/home');
     };
 };

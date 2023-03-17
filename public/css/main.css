@@ -44,6 +44,9 @@ body {
 .danger{
   background-color: #d11515c0;
 }
+.sucess{
+  background-color: #D4EDDA;
+}
 .header{
   display: flex;
   background-color: var(--var-cor-1);

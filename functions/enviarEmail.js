@@ -1,4 +1,4 @@
-module.exports = (link, email) => {
+module.exports = async(link, email) => {
     const nodemailer = require('nodemailer');
 
     const transport = nodemailer.createTransport({
@@ -11,13 +11,13 @@ module.exports = (link, email) => {
         },
     })
 
-    transport.sendMail({
+    await transport.sendMail({
         from: `Sistema ponto <${process.env.EMAIL}>`,
         to:`${email}`,
         subject: 'Recuperação de senha',
-        html: `<h1>Acesse o link abaixo para redefinir sua senha</h1><br><h3>${link}</h3>`,
+        html: `<h1>Acesse o link abaixo para redefinir sua senha, o link é válido por 5 minutos.</h1><br><a href='http://${link}'>Redefinir senha</a>`,
         //Caso o servidor email não suporte em html
-        text: `Acesse o link para redefinir sua senha:\n ${link}`
+        text: `Acesse o link para redefinir sua senha, o link é válido por 5 minutos:\n ${link}`
     }).then((resposta) =>{
         console.log('Email enviado com sucesso!', resposta)
     }).catch((err) => console.log('Erro ao enviar email: ', err));

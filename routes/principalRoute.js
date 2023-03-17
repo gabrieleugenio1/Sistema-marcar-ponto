@@ -9,6 +9,7 @@ router
       .get('/', PrincipalController.principalFuncionario)
       .get('/esqueci-senha', PrincipalController.esqueciSenha)
       .post('/envioSenha', PrincipalController.envioSenha)
+      .post('/criarNovaSenha', PrincipalController.criarNovaSenha)
       .get('/logout', Autenticacao.verificaToken, PrincipalController.logout)
       
 

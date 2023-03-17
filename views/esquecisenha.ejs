@@ -10,10 +10,14 @@
   </head>
   <body>
     <%if(mensagem.length > 0){ %>
-    <div class="alert danger">
+    <div class="alert sucess">
       <p><b><%= mensagem; %></b></p>
     </div>
-    <%} %>
+    <%} else if(mensagemErro.length > 0){%> 
+      <div class="alert danger">
+        <p><b><%= mensagemErro; %></b></p>
+      </div>
+      <%} %>
     <main>
       <%- include("./partials/tempo"); %>
       <div class="forms__inicio">
@@ -21,12 +25,25 @@
           <a href="/">Voltar</a>
           <h2>Esqueceu a senha?</h2>
         </div>
-        <form action="/envioSenha" method="post" class="forms">
-          <label for="email">Email:</label>
-          <input name="email" id="email" type="email" required />
-          <br />
-          <input type="submit" value="Solicitar" />
-        </form>
+        <%if(codigo ? codigo.length == 6 : null){ %>
+          <form action="/criarNovaSenha" method="post" class="forms">
+            <input type="hidden" name="CodigoHidden" value="<%= codigo %>">
+            <label for="senhaUm">Insira a nova senha:</label>
+            <input name="senhaUm" id="senhaUm" minlength="6" type="password" required />
+            <label for="senhaDois">Confirme a senha:</label>
+            <input name="senhaDois" id="senhaDois" minlength="6" type="password" required />
+            <br />
+            <input type="submit" value="Criar nova senha" />
+            <small>Mínimo 6 caracteres</small>
+          </form>
+          <%} else {%> 
+            <form action="/envioSenha" method="post" class="forms">
+              <label for="email">Email:</label>
+              <input name="email" id="email" type="email" required />
+              <br />
+              <input type="submit" value="Solicitar" />
+            </form>
+            <%}%>
       </div>
     </main>
     <script src="./js/refreshTime.js"></script>
