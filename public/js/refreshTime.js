@@ -1,5 +1,5 @@
 //Mostrar a data de hoje
-let mostrarDia = document.getElementById("dia")
+const mostrarDia = document.getElementById("dia")
 function refreshDia() {
     let timeElapsed = Date.now();
     let dateString = new Date(timeElapsed);
@@ -9,7 +9,7 @@ function refreshDia() {
 setInterval(refreshDia, 0)
 
 //Mostrar o horário no momento
-let timeDisplay = document.getElementById("time")
+const timeDisplay = document.getElementById("time")
 function refreshTime() {
     let timeElapsed = Date.now();
     let dateString = new Date(timeElapsed).toLocaleTimeString();
@@ -17,3 +17,7 @@ function refreshTime() {
     timeDisplay.innerHTML = formattedString;
 }
 setInterval(refreshTime, 0)
+
+const alert = document.querySelector('.alert');
+setTimeout(()=>alert.style.display = 'none', 4500);
+
