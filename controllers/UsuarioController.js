@@ -1,9 +1,63 @@
-const { Usuario, Funcionarios, Pontos, Sequelize } = require('../models/indexModels');
-const validarAdmin = require('../functions/validarAdmin');
-const Autenticacao = require('../middleware/Autenticacao');
+const { Usuario, Funcionarios, Pontos, Sequelize } = require("../models/indexModels");
+const validarAdmin = require("../functions/validarAdmin");
+const Autenticacao = require("../middleware/Autenticacao");
+const moment = require("moment");
 const bcrypt = require("bcrypt");
+const novoRelatorio = require("../functions/gerarRelatorio");
 
 module.exports = class UsuarioController {
+    static async relatorio (req, res){
+        return res.status(200).render('./admin/relatorios', {title: "Relatorio Admin"});
+    }
+    static async gerarRelatorio(req, res){
+        await Funcionarios.findAll({
+            attributes:[
+                "nome",
+                "email",
+                "cpf",
+                "funcao",
+                "setor",
+                "cargahorariasemanal",
+                "ativo"
+            ],
+            raw: true,            
+            include: [{
+            attributes:[
+                [(Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y')), 'dataEntrada'],
+                [Sequelize.fn('date_format', Sequelize.col('horarioEntrada'), '%H:%i'), 'horarioEntrada'],
+                [Sequelize.fn('date_format', Sequelize.col('dataSaida'), '%d/%m/%Y'), 'dataSaida'],
+                [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
+            ],
+            model: Pontos, 
+            order: [
+                ['dataEntrada', 'DESC'],
+            ],  
+            where:{dataEntrada: {[Sequelize.Op.gte]: moment().subtract(7, 'days').toDate()}},          
+}]}).then((employees) => {
+        employees.forEach((funcionario) => {
+            moment.locale("pt-br"); 
+            let cpf = funcionario.cpf;
+            let parteA = cpf.substring(0,3);
+            let parteB = cpf.substring(3,6);
+            let parteC = cpf.substring(6,9);
+            let parteD = cpf.substring(9,11);
+            cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
+            funcionario.cpf=cpf;   
+            const dataAtual = moment(funcionario['pontos.dataSaida'] + ' ' + funcionario['pontos.horarioSaida'], 'DD/MM/YYYY HH:mm');
+            funcionario.dataSaida = dataAtual.format('LLL');
+            const primeiroPonto = moment(funcionario['pontos.dataEntrada'] + ' ' + funcionario['pontos.horarioEntrada'], 'DD/MM/YYYY HH:mm');
+            funcionario.dataEntrada = primeiroPonto.format('LLL'); ;
+            dataAtual.diff(primeiroPonto, "hours") ? funcionario.horasPaga = dataAtual.diff(primeiroPonto, "hours") : null;
+            delete funcionario['pontos.dataEntrada'];
+            delete funcionario['pontos.horarioEntrada'];
+            delete funcionario['pontos.dataSaida'];
+            delete funcionario['pontos.horarioSaida'];
+        });   
+        moment.locale("cv");    
+        novoRelatorio(moment().format("L"), employees);              
+        return res.status(200).redirect('/admin/relatorios');
+    });
+    };
 
     static async criarConta (req,res) {
         const validado = {
@@ -69,7 +123,11 @@ module.exports = class UsuarioController {
                     [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
                     "funcionarioMatricula"
                 ],
-                model: Pontos,             
+                model: Pontos, 
+                order: [
+                    ['dataEntrada', 'DESC'],
+                ],  
+                where:{dataEntrada: {[Sequelize.Op.gte]: moment().subtract(7, 'days').toDate()}},          
     }],group: ['funcionarioMatricula']}).then((employees) =>{
             employees.forEach((funcionario) => {
                 let cpf = funcionario.cpf;
@@ -79,10 +137,11 @@ module.exports = class UsuarioController {
                 let parteD = cpf.substring(9,11);
                 cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
                 funcionario.cpf=cpf;   
-                let a = 0
-
-                console.log( funcionario)
-            });                     
+                const dataAtual = moment(funcionario['pontos.dataSaida'] + ' ' + funcionario['pontos.horarioSaida'], 'DD/MM/YYYY HH:mm');
+                const primeiroPonto = moment(funcionario['pontos.dataEntrada'] + ' ' + funcionario['pontos.horarioEntrada'], 'DD/MM/YYYY HH:mm');
+                dataAtual.diff(primeiroPonto, "hours") ? funcionario.horasPaga = dataAtual.diff(primeiroPonto, "hours") : null;
+            });          
+            console.log(employees)           
          return res.status(200).render('./admin/home', {title: "Home", funcionarios: employees});
         });
     };
@@ -99,7 +158,7 @@ module.exports = class UsuarioController {
             id:req.body.id,
             email: req.body.email,  
             senha: req.body.senha
-        }
+        };
         console.log(validado)
         const erros = validarAdmin(validado, 'alteracao');     
         const salt = bcrypt.genSaltSync(10);
@@ -111,8 +170,7 @@ module.exports = class UsuarioController {
             erros.push({error: "Senha inválida! A senha deve ter no minimo 6 caracteres."});
         }else{
             validado.senha = senhaCriptografada;
-        }
-        
+        };       
         if (erros.length > 0){
             req.flash("erros", erros);
             return  res.status(200).redirect(`/admin/alterardados`);
