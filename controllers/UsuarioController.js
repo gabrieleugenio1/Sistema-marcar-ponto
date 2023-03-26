@@ -1,4 +1,4 @@
-const { Usuario, Funcionarios, Pontos, Sequelize } = require("../models/indexModels");
+const { Usuario, Funcionarios, Pontos, Sequelize, Relatorios } = require("../models/indexModels");
 const validarAdmin = require("../functions/validarAdmin");
 const Autenticacao = require("../middleware/Autenticacao");
 const moment = require("moment");
@@ -6,9 +6,35 @@ const bcrypt = require("bcrypt");
 const novoRelatorio = require("../functions/gerarRelatorio");
 
 module.exports = class UsuarioController {
+
     static async relatorio (req, res){
-        return res.status(200).render('./admin/relatorios', {title: "Relatorio Admin"});
-    }
+        await Relatorios.findAll({raw:true, attributes:[
+            "id",
+            "caminho",
+            [Sequelize.fn('date_format', Sequelize.col('updatedAt'), '%d/%m/%Y - %H:%ih'), 'dataCriacao'],
+            [Sequelize.fn('date_format', Sequelize.col('createdAt'), '%d/%m/%Y'), 'arquivo'],
+            "usuarioId"
+        ]}).then((relatorios) =>{
+            return res.status(200).render('./admin/relatorios', {title: "Relatorio Admin", relatorios: relatorios});
+            
+        });
+    };
+
+    static async baixarRelatorio (req, res) {
+        const codigo = req.query.codigo;
+        const tipo = req.query.tipo;
+        if (tipo == "baixar"){
+            await Relatorios.findOne({where:{id:codigo}}).then(arquivo => {
+                res.status(200).download(arquivo.caminho);
+            }).catch(()=> res.send(JSON.stringify("Arquivo não existe")));
+        }else if(tipo == "deletar"){
+            await Relatorios.destroy({where:{id:codigo}}).then(()=>  res.status(200).redirect("/admin/relatorios"));
+        }else{
+            res.send(JSON.stringify("Arquivo não existe ou caminho da URL incorreto"));
+        }
+     
+        }
+
     static async gerarRelatorio(req, res){
         await Funcionarios.findAll({
             attributes:[
@@ -23,26 +49,21 @@ module.exports = class UsuarioController {
             raw: true,            
             include: [{
             attributes:[
-                [(Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y')), 'dataEntrada'],
+                [Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y'), 'dataEntrada'],
                 [Sequelize.fn('date_format', Sequelize.col('horarioEntrada'), '%H:%i'), 'horarioEntrada'],
                 [Sequelize.fn('date_format', Sequelize.col('dataSaida'), '%d/%m/%Y'), 'dataSaida'],
                 [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
             ],
             model: Pontos, 
-            order: [
-                ['dataEntrada', 'DESC'],
-            ],  
             where:{dataEntrada: {[Sequelize.Op.gte]: moment().subtract(7, 'days').toDate()}},          
 }]}).then((employees) => {
         employees.forEach((funcionario) => {
             moment.locale("pt-br"); 
-            let cpf = funcionario.cpf;
-            let parteA = cpf.substring(0,3);
-            let parteB = cpf.substring(3,6);
-            let parteC = cpf.substring(6,9);
-            let parteD = cpf.substring(9,11);
-            cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
-            funcionario.cpf=cpf;   
+            const parteA = funcionario.cpf.substring(0,3);
+            const parteB = funcionario.cpf.substring(3,6);
+            const parteC = funcionario.cpf.substring(6,9);
+            const parteD = funcionario.cpf.substring(9,11);
+            funcionario.cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
             const dataAtual = moment(funcionario['pontos.dataSaida'] + ' ' + funcionario['pontos.horarioSaida'], 'DD/MM/YYYY HH:mm');
             funcionario.dataSaida = dataAtual.format('LLL');
             const primeiroPonto = moment(funcionario['pontos.dataEntrada'] + ' ' + funcionario['pontos.horarioEntrada'], 'DD/MM/YYYY HH:mm');
@@ -54,7 +75,7 @@ module.exports = class UsuarioController {
             delete funcionario['pontos.horarioSaida'];
         });   
         moment.locale("cv");    
-        novoRelatorio(moment().format("L"), employees);              
+        novoRelatorio(moment().format("L"), employees, req.userId );         
         return res.status(200).redirect('/admin/relatorios');
     });
     };
@@ -112,9 +133,10 @@ module.exports = class UsuarioController {
     };
 
     static async home (req, res)  {
-        await Funcionarios.findAll({
-                raw: true,            
+        let todosFuncionarios = await Funcionarios.findAll(
+            {   
                 include: [{
+                model: Pontos,
                 attributes:[
                     "id",
                     [Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y'), 'dataEntrada'],
@@ -123,26 +145,60 @@ module.exports = class UsuarioController {
                     [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
                     "funcionarioMatricula"
                 ],
+                where:{dataEntrada: {[Sequelize.Op.between]: [moment().day(0).toDate(), moment().day(6).toDate()]}}, 
+                required:false
+            }], 
+        });
+        todosFuncionarios = JSON.parse(JSON.stringify(todosFuncionarios, null, 2 ));
+        todosFuncionarios.map((funcionario) =>{
+            let horasPagas;
+            const parteA = funcionario.cpf.substring(0,3);
+            const parteB = funcionario.cpf.substring(3,6);
+            const parteC = funcionario.cpf.substring(6,9);
+            const parteD = funcionario.cpf.substring(9,11);
+            funcionario.cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
+            for(let pontos of funcionario.pontos){
+                horasTotal += horasPagas;
+                const dataAtual = moment(pontos['dataSaida'] + ' ' + pontos['horarioSaida'], 'DD/MM/YYYY HH:mm');
+                const primeiroPonto = moment(pontos['dataEntrada'] + ' ' +  pontos['horarioEntrada'], 'DD/MM/YYYY HH:mm');
+                dataAtual.diff(primeiroPonto, "hours") ? horasPagas += dataAtual.diff(primeiroPonto, "hours") : null;
+            };
+            funcionario.horasPagas = horasTotal;
+            console.log(funcionario)
+        })
+ 
+
+       // console.log(JSON.stringify(teste, null, 2))
+
+
+        await Funcionarios.findAll({           
+                include: [{
                 model: Pontos, 
+                attributes:[
+                    "id",
+                    [Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y'), 'dataEntrada'],
+                    [Sequelize.fn('date_format', Sequelize.col('horarioEntrada'), '%H:%i'), 'horarioEntrada'],
+                    [Sequelize.fn('date_format', Sequelize.col('dataSaida'), '%d/%m/%Y'), 'dataSaida'],
+                    [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
+                    "funcionarioMatricula"
+                ],
+                where:{dataEntrada: {[Sequelize.Op.between]: [moment().day(0).toDate(), moment().day(6).toDate()]}}, 
                 order: [
-                    ['dataEntrada', 'DESC'],
-                ],  
-                where:{dataEntrada: {[Sequelize.Op.gte]: moment().subtract(7, 'days').toDate()}},          
-    }],group: ['funcionarioMatricula']}).then((employees) =>{
+                    ['dataEntrada', 'ASC'],
+                ],                 
+                required:false,                       
+    }]}).then((employees) =>{
             employees.forEach((funcionario) => {
-                let cpf = funcionario.cpf;
-                let parteA = cpf.substring(0,3);
-                let parteB = cpf.substring(3,6);
-                let parteC = cpf.substring(6,9);
-                let parteD = cpf.substring(9,11);
-                cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
-                funcionario.cpf=cpf;   
+                const parteA = funcionario.cpf.substring(0,3);
+                const parteB = funcionario.cpf.substring(3,6);
+                const parteC = funcionario.cpf.substring(6,9);
+                const parteD = funcionario.cpf.substring(9,11);
+                funcionario.cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
                 const dataAtual = moment(funcionario['pontos.dataSaida'] + ' ' + funcionario['pontos.horarioSaida'], 'DD/MM/YYYY HH:mm');
                 const primeiroPonto = moment(funcionario['pontos.dataEntrada'] + ' ' + funcionario['pontos.horarioEntrada'], 'DD/MM/YYYY HH:mm');
-                dataAtual.diff(primeiroPonto, "hours") ? funcionario.horasPaga = dataAtual.diff(primeiroPonto, "hours") : null;
-            });          
-            console.log(employees)           
-         return res.status(200).render('./admin/home', {title: "Home", funcionarios: employees});
+                dataAtual.diff(primeiroPonto, "hours") ? funcionario.horasPagas = dataAtual.diff(primeiroPonto, "hours") : null;
+            });         
+            return res.status(200).render('./admin/home', {title: "Home", funcionarios: employees});
         });
     };
 

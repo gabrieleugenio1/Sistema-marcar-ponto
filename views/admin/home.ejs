@@ -21,7 +21,7 @@
             <th>Setor</th>
             <th>CPF</th>
             <th>Carga Horaria Semanal</th>
-            <th>Horas pagas</th>
+            <th>Horas pagas na semana</th>
             <th>Última Entrada</th>
             <th>Última Saída</th>
             <th>Editar</th>
@@ -29,17 +29,19 @@
         </tr>
         </thead>
         <tbody>
-          <td>000000</td>
-          <td>Gabriel</td>
-          <td>Programador</td>
-          <td>01</td>
-          <td>000.000.000-83</td>
-          <td>44h</td>
-          <td>10h</td>
-          <td>14/02/2023 08:00h</td>
-          <td>14/02/2023 18:00h</td>
-          <td><a href="#">Alterar</a></td>
-          <td>Não</td> 
+          <tr>
+            <td>000000</td>
+            <td>Gabriel</td>
+            <td>Programador</td>
+            <td>01</td>
+            <td>000.000.000-83</td>
+            <td>44h</td>
+            <td>10h</td>
+            <td>14/02/2023 08:00h</td>
+            <td>14/02/2023 18:00h</td>
+            <td><a href="#">Alterar</a></td>
+            <td>Não</td> 
+          </tr>
           <% for(funcionario of funcionarios) { %> 
           <tr>           
             <td><%= funcionario.matricula %></td>
@@ -48,7 +50,7 @@
             <td><%= funcionario.setor.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
             <td><%= funcionario.cpf %></td>
             <td><%= funcionario.cargahorariasemanal %>h</td>
-            <td><%= funcionario.horasPaga ? funcionario.horasPaga : 'Nenhuma'%>h</td>
+            <td><%= funcionario.horasPagas ? funcionario.horasPagas + 'h': 'Nenhuma'%></td>
             <td><%= funcionario['pontos.dataEntrada'] ? funcionario['pontos.dataEntrada'] +' - '+funcionario['pontos.horarioEntrada']+'h': "Nenhuma" %></td>
             <td><%= funcionario['pontos.dataSaida'] ? funcionario['pontos.dataSaida'] +' - '+funcionario['pontos.horarioSaida']+'h': "Nenhuma" %></td>
             <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>

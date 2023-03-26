@@ -22,7 +22,6 @@ const Usuario = Conexao.define('usuario', {
         },
     }
 });
-
 Usuario.sync({ force: false });
 
 module.exports = Usuario;

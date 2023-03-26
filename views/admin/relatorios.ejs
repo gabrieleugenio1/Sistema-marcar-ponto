@@ -21,32 +21,19 @@
       <table class="tabela__funcionario" border="1">
         <thead>
         <tr>
-            <th>Matrícula</th>
-            <th>Funcionário</th>
-            <th>Função</th>
-            <th>Setor</th>
-            <th>CPF</th>
-            <th>Carga Horaria Semanal</th>
-            <th>Horas pagas</th>
-            <th>Última Entrada</th>
-            <th>Última Saída</th>
-            <th>Editar</th>
-            <th>Ativo</th>
+            <th>Data do relatório</th>
+            <th>Arquivo</th>
+            <th>Deletar</th>
         </tr>
         </thead>
         <tbody>
-          <td>000000</td>
-          <td>Gabriel</td>
-          <td>Programador</td>
-          <td>01</td>
-          <td>000.000.000-83</td>
-          <td>44h</td>
-          <td>10h</td>
-          <td>14/02/2023 08:00h</td>
-          <td>14/02/2023 18:00h</td>
-          <td><a href="#">Alterar</a></td>
-          <td>Não</td> 
-
+          <% for(relatorio of relatorios) { %> 
+            <tr>           
+              <td><%= relatorio.dataCriacao %></td>
+              <td><a href="/admin/baixar-relatorio?codigo=<%= relatorio.id %>&tipo=baixar"><%= relatorio.arquivo %> </a></td>
+              <td><a href="/admin/baixar-relatorio?codigo=<%= relatorio.id %>&tipo=deletar">Deletar</a></td>   
+          </tr>
+          <% } %>  %>
         </tbody>
      </table>
     </main>

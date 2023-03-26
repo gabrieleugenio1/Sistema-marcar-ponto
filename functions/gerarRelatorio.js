@@ -1,4 +1,8 @@
-module.exports = (nomePlanilhaArquivo, data) => {
+const {Sequelize, Relatorios} = require("../models/indexModels");
+const { Op } = Sequelize;
+const moment = require("moment");
+
+module.exports = async(nomePlanilhaArquivo, data, usuario) => {
     const xl = require("excel4node");
     const wb = new xl.Workbook();
     const ws = wb.addWorksheet(nomePlanilhaArquivo);
@@ -36,7 +40,13 @@ module.exports = (nomePlanilhaArquivo, data) => {
         });
         rowIndex++;
     });
+    moment.locale("en-ca");
+    const encontrado = await Relatorios.findOne({raw:true, where: {createdAt: {[Op.startsWith]: moment().format('L').toString()}}});
+    if(!encontrado){
+        await Relatorios.create({caminho:`./private/${nomePlanilhaArquivo}.xlsx`, usuarioId: usuario})
+    }else{
+       await Relatorios.update({caminho:`./private/${nomePlanilhaArquivo}.xlsx`}, { where: {createdAt: {[Op.startsWith]: moment().format('L').toString()}}});
+    }
     wb.write(`./private/${nomePlanilhaArquivo}.xlsx`);
-
 };
   

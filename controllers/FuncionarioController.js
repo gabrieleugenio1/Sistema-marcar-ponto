@@ -5,6 +5,7 @@ const toTitleCase = require('../functions/nameTitle');
 const Autenticacao = require('../middleware/Autenticacao');
 
 module.exports = class FuncionarioController {
+    
     static async login(req, res) {
         res.clearCookie('token');
         const {email, senha} = req.body;
@@ -129,12 +130,12 @@ module.exports = class FuncionarioController {
         quantidade += await Pontos.count({where: {dataSaida:finalDate, funcionarioMatricula: req.userId }});
         if(quantidade == 0){
             console.log("Primeira entrada no dia", finalDate);
-            return await Pontos.create({dataEntrada: Sequelize.fn('NOW'), horarioEntrada: Sequelize.fn('NOW'), funcionarioMatricula: req.userId }).then(()=>{
+            return await Pontos.create({dataEntrada: Sequelize.fn('NOW'), horarioEntrada: Sequelize.fn('NOW'), funcionarioMatricula: req.userId }, {include: [ Funcionarios ]}).then(()=>{
                 return res.status(200).redirect('/funcionario/home');
             }).catch(err => console.log(err));  
         }else if(quantidade == 1){
             console.log("Houve uma entrada no dia", finalDate);
-            return await Pontos.update({dataSaida: Sequelize.fn('NOW'), horarioSaida: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}).then(()=>{
+            return await Pontos.update({dataSaida: Sequelize.fn('NOW'), horarioSaida: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}, {include: [ Funcionarios ]}).then(()=>{
                 return res.status(200).redirect('/funcionario/home');
             }).catch(err => console.log(err));  
         }

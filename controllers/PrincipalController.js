@@ -5,31 +5,40 @@ const moment = require('moment');
 const bcrypt = require('bcrypt');
 
 module.exports = class PrincipalController {
+
     static async  principal  (req, res) {
         const user = await Usuario.count();
         return res.status(200).render("indexAdmin", { title: "Sistema de ponto", qtdUsuarios: user, mensagem: req.flash("mensagem"), erros: req.flash("erros")});     
     };
+
     static async  principalFuncionario  (req, res) {
         const employee = await Funcionarios.count();
         return res.status(200).render("index", { title: "Sistema de ponto", qtdFuncionarios: employee, mensagem: req.flash("mensagem"), erros: req.flash("erros")});     
     };
+
     static async esqueciSenha (req, res) {
         const codigo = req.query['codigo'];
         return res.status(200).render("esqueciSenha", { title: "Esqueci a senha", codigo: codigo, mensagem: req.flash("mensagem"), mensagemErro: req.flash("mensagemErro")});
     };
+
     static async envioSenha (req, res) {
         const email = req.body.email;
         let codigo = gerarCodigo();
+        const usuarioEmail = await Usuario.findOne({where:{email: email}})
         const funcionarioEmail = await Funcionarios.findOne({where:{email: email}})
-        console.log(funcionarioEmail)
-        if(funcionarioEmail){
+        if(usuarioEmail){
+            const codigoEmail = await Codigo.create({codigo:codigo, dataGerada:Sequelize.fn('NOW'), horarioGerado:Sequelize.fn('NOW'), ativo:true,usuarioId:usuarioEmail.id}); 
+            const link = process.env.URL + ':' + process.env.PORT + '/esqueci-senha?codigo=' + codigoEmail.codigo;
+            enviarEmail(link, usuarioEmail.email);
+        }else if(funcionarioEmail){
             const codigoEmail = await Codigo.create({codigo:codigo, dataGerada:Sequelize.fn('NOW'), horarioGerado:Sequelize.fn('NOW'), ativo:true,funcionarioMatricula:funcionarioEmail.matricula}); 
             const link = process.env.URL + ':' + process.env.PORT + '/esqueci-senha?codigo=' + codigoEmail.codigo;
             enviarEmail(link, funcionarioEmail.email);
         };
-        req.flash('mensagem','Link para recuperação enviado, caso não encontre, verifique a caixa de spam');
+        req.flash('mensagem','Link para recuperação enviado,caso não encontre, verifique a caixa de spam');
         return res.status(200).redirect("/esqueci-senha");
     };
+
     static async criarNovaSenha (req, res) {
         const { senhaUm, senhaDois, CodigoHidden} = req.body;
         if(senhaUm === senhaDois && senhaUm.length >= 6){
@@ -55,14 +64,16 @@ module.exports = class PrincipalController {
         };
         req.flash('mensagemErro','Insira uma senha valida.');
         return res.status(200).redirect(`/esqueci-senha?codigo=${CodigoHidden}`);
-
     };
+
     static async cadastroFuncionario (req, res)  {
         return res.status(200).render('admin/cadastrar-funcionario', {title: "Cadastrar nova senha", erros: req.flash("erros")});
     };
+
     static async relatorio (req, res)  {
         return res.status(200).render('admin/relatorio', {title: "Relatório"}); 
     };
+    
     static async logout (req, res)  {
         res.clearCookie('token');
         if (req.tipoConta == 'Admin') {            
