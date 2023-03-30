@@ -27,7 +27,8 @@ const Funcionarios = Conexao.define("funcionarios", {
     },
     cpf:{
         type: DataTypes.STRING(15),
-        allowNull:false
+        allowNull:false,
+        unique:true
     },
     funcao: {
         type: DataTypes.STRING(130),

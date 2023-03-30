@@ -1,6 +1,7 @@
 const validateCPF = require('./validarCPF');
+const { Funcionarios } = require('../models/indexModels');
 
-module.exports = (funcionario, tipo) => {
+module.exports = async (funcionario, tipo) => {
   let matricula = funcionario.matricula;
   let nome = funcionario.nome;
   let email = funcionario.email;
@@ -10,6 +11,7 @@ module.exports = (funcionario, tipo) => {
   let setor = funcionario.setor;
   let cargaHorariaSemanal = parseInt(funcionario.cargahorariasemanal);
   let ativo = funcionario.ativo;
+  let cpfExiste = await Funcionarios.findOne({raw:true, where: {cpf: cpf}});
 
   /** INICIO DAS VALIDAÇÕES **/      
   let erros = [];     
@@ -31,41 +33,49 @@ module.exports = (funcionario, tipo) => {
   cpf = cpf.trim(); // Limpa espaços em branco no inicio e final do cpf.
   /*  cpf = cpf.replace(/[^\d]/g, ''); */ // Remove caracteres não numéricos. 
   if (matricula.length > 1){
-    if(!matricula || matricula == undefined || matricula == null || isNaN(matricula)){
-    erros.push({error: "Matrícula inválida! Deve ser apenas números."});
+    if(!matricula || matricula == undefined || matricula == null || isNaN(matricula)) {
+     erros.push({error: "Matrícula inválida! Deve ser apenas números."});
     }; 
-  }
+  };
 
-  if(!nome || nome == undefined || nome == null ){
-  erros.push({error: "Nome inválido! Não pode ser vazio e deve ser completo."});
-  };     
+  if(!nome || nome == undefined || nome == null ) {
+   erros.push({error: "Nome inválido! Não pode ser vazio e deve ser completo."});
+  };  
+
   if (!email || email == undefined || nome == null || !regex.email.test(email)) {
-  erros.push({ error: "E-mail inválido!" });
+   erros.push({ error: "E-mail inválido!" });
   };     
 
-  if (!cargaHorariaSemanal || cargaHorariaSemanal == undefined || isNaN(cargaHorariaSemanal) || cargaHorariaSemanal == null) {
-  erros.push({ error: "Carga horária inválida!" });
+  if (!cargaHorariaSemanal || cargaHorariaSemanal == undefined || cargaHorariaSemanal > 44 || isNaN(cargaHorariaSemanal) || cargaHorariaSemanal == null) {
+    erros.push({ error: "Carga horária inválida!" });
   }; 
 
   if (!funcao || funcao == undefined ||funcao == null) {
-  erros.push({ error: "Função inválida!" });
+    erros.push({ error: "Função inválida!" });
   }; 
 
   if (!setor || setor == undefined ||setor == null) {
-  erros.push({ error: "Setor inválido!" });
+   erros.push({ error: "Setor inválido!" });
   }; 
+  
   if (ativo == undefined || ativo == null || (ativo !== false && ativo !== true )) {
-  erros.push({ error: "Ativo inválido!" });
+   erros.push({ error: "Ativo inválido!" });
   }; 
 
   if (!validateCPF(cpf) || !cpf || cpf == undefined || cpf == null) {
-  erros.push({ error: "CPF inválido!" });
+   erros.push({ error: "CPF inválido!" });
   };    
-  if(tipo == "cadastro"){
-      if(!senha || senha == undefined || senha == null || senha <= 6 ){
-          erros.push({error: "Senha inválida! A senha deve ter no minimo 6 caracteres."});
-      };
-    }
-  /* FINAL DAS VALIDAÇÕES */   
+
+  if(cpfExiste.email != email) {
+    erros.push({ error: "CPF já existe!" });
+  };
+
+  if(tipo == "cadastro") {
+    if(!senha || senha == undefined || senha == null || senha <= 6 ) {
+      erros.push({error: "Senha inválida! A senha deve ter no minimo 6 caracteres."});
+    };
+  };
+  /* FINAL DAS VALIDAÇÕES */ 
+
   return erros;   
 };

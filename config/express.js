@@ -31,6 +31,13 @@ app.use(robots({
 
   //Rotas
   routes(app);
+
+  //Página não encontrada: 404
+  app.get('*', function(req, res){
+    res.status(404).json({message:'404'});
+  });
+
+
 }
 
 module.exports = configExpress;

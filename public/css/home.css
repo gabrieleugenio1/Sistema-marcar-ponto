@@ -10,3 +10,17 @@
     margin-top: 4rem;
     margin-left: .8rem;
 }
+
+.h1__relatorio{
+    margin-top: 4rem;
+    margin-left: .8rem;
+}
+
+.tabela__relatorios{
+    margin: 5px 10px 0 10px;
+    width: calc(100% - 20px);
+    text-align: center;
+}
+.gerar__relatorio{
+    margin-left: 2.8rem;
+}

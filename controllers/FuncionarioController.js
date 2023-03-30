@@ -65,17 +65,17 @@ module.exports = class FuncionarioController {
             cargahorariasemanal: req.body.cargahorariasemanal,
             ativo: ativo            
         };
-        const erros = validarFuncionario(validado, 'cadastro');          
+        const erros = await validarFuncionario(validado, 'cadastro');          
         if (erros.length > 0){
             req.flash("erros", erros);
-            return  res.status(200).redirect("/admin/cadastrofuncionario");
+            return res.status(200).redirect("/admin/cadastrofuncionario");
         };
 
         const salt = bcrypt.genSaltSync(10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);
         validado.senha=senhaCriptografada;     
-        await Funcionarios.create(validado).then(() =>
-        res.status(200).redirect("/admin/home")
+        await Funcionarios.create(validado).then(() => {
+           return res.status(200).redirect("/admin/home")}
         );
     };
           
@@ -87,9 +87,9 @@ module.exports = class FuncionarioController {
 
     static async alteracaoFuncionario (req, res) {
         let ativo = req.body.ativo;        
-        if (ativo == 'true'){
+        if (ativo == 'true') {
             ativo = true;
-        } else if (ativo == 'false'){
+        } else if (ativo == 'false') {
             ativo = false;
         };
         const validado = {
@@ -103,10 +103,10 @@ module.exports = class FuncionarioController {
             cargahorariasemanal: req.body.cargahorariasemanal,
             ativo: ativo
         };     
-        const erros = validarFuncionario(validado, 'alteracao');     
+        const erros = await validarFuncionario(validado, 'alteracao');     
         const salt = bcrypt.genSaltSync(10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);        
-        if(req.body.senha == undefined || req.body.senha == null || req.body.senha.trim() == ''){
+        if(req.body.senha == undefined || req.body.senha == null || req.body.senha.trim() == '') {
             delete validado.senha;         
         }else if (req.body.senha <= 6) {
             erros.push({error: "Senha inválida! A senha deve ter no minimo 6 caracteres."});
@@ -118,7 +118,7 @@ module.exports = class FuncionarioController {
             return  res.status(200).redirect(`/admin/alterarfuncionario/${req.body.matricula}`);
         };        
 
-        await Funcionarios.update(validado, {where: {matricula: req.body.id}}).then(() => res.status(200).redirect("/admin/home"))
+        await Funcionarios.update(validado, {where: {matricula: req.body.id}}).then(() => {return res.status(200).redirect("/admin/home")})
         .catch(err => {
             console.log(err);
         });
@@ -128,6 +128,7 @@ module.exports = class FuncionarioController {
         const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
         let quantidade = await Pontos.count({where: {dataEntrada:finalDate, funcionarioMatricula: req.userId }});
         quantidade += await Pontos.count({where: {dataSaida:finalDate, funcionarioMatricula: req.userId }});
+        
         if(quantidade == 0){
             console.log("Primeira entrada no dia", finalDate);
             return await Pontos.create({dataEntrada: Sequelize.fn('NOW'), horarioEntrada: Sequelize.fn('NOW'), funcionarioMatricula: req.userId }, {include: [ Funcionarios ]}).then(()=>{
@@ -138,7 +139,8 @@ module.exports = class FuncionarioController {
             return await Pontos.update({dataSaida: Sequelize.fn('NOW'), horarioSaida: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}, {include: [ Funcionarios ]}).then(()=>{
                 return res.status(200).redirect('/funcionario/home');
             }).catch(err => console.log(err));  
-        }
+        };
+        
         console.log("Já teve uma entrada e saída")
         return res.status(200).redirect('/funcionario/home');
     };

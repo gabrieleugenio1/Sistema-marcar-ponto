@@ -12,13 +12,24 @@
     <%- include("../partials/header"); %>
     <main class="main__home">
       <div class="main__home__div">
-        <h1 class="h1__funcionario">Gerar relatório</h1>
-        <form action="/admin/gerarRelatorio" method="post" class="forms">
-          <input type="submit" class="forms-input" value="Gerar novo relatório">
-        </form>
+        <h1 class="h1__relatorio">Gerar relatório</h1>
+        <div class="gerar__relatorio">
+          <div>
+          <form action="/admin/gerarRelatorio" method="post" class="forms">
+            <input type="submit" class="forms-input" value="Gerar novo relatório">
+          </form>
+        </div>
+        <p>Ou</p>
+        <div>
+          <form action="/admin/gerarRelatorio" method="post" class="forms">
+            <label for="data">Gerar a partir de determinada data:</label><br>
+            <input type="date" name="data" id="data" required>
+            <input type="submit" class="forms-input" value="Gerar novo relatório">
+          </form>
+        </div>
       </div>
-      <h1 class="h1__funcionario">Relatórios</h1>
-      <table class="tabela__funcionario" border="1">
+      <h1 class="h1__relatorio">Relatórios</h1>
+      <table class="tabela__relatorios" border="1">
         <thead>
         <tr>
             <th>Data do relatório</th>

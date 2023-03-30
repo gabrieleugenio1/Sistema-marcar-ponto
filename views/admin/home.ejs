@@ -51,8 +51,8 @@
             <td><%= funcionario.cpf %></td>
             <td><%= funcionario.cargahorariasemanal %>h</td>
             <td><%= funcionario.horasPagas ? funcionario.horasPagas + 'h': 'Nenhuma'%></td>
-            <td><%= funcionario['pontos.dataEntrada'] ? funcionario['pontos.dataEntrada'] +' - '+funcionario['pontos.horarioEntrada']+'h': "Nenhuma" %></td>
-            <td><%= funcionario['pontos.dataSaida'] ? funcionario['pontos.dataSaida'] +' - '+funcionario['pontos.horarioSaida']+'h': "Nenhuma" %></td>
+            <td><%= funcionario.ultimaEntrada ? funcionario.ultimaEntrada +'h': "Nenhuma" %></td>
+            <td><%= funcionario.ultimaSaida ? funcionario.ultimaSaida + 'h': "Nenhuma" %></td>
             <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
             <td><%= funcionario.ativo == 1 ? "Sim" : "Não" %></td>     
         </tr>
