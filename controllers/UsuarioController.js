@@ -37,6 +37,8 @@ module.exports = class UsuarioController {
         };
 
     static async gerarRelatorio(req, res){
+        console.log(req.body.data);
+
         await Funcionarios.findAll({
             raw: true,            
             attributes:[
@@ -53,6 +55,10 @@ module.exports = class UsuarioController {
             attributes:[
                 [Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y'), 'dataEntrada'],
                 [Sequelize.fn('date_format', Sequelize.col('horarioEntrada'), '%H:%i'), 'horarioEntrada'],
+                [Sequelize.fn('date_format', Sequelize.col('intervaloDataEntrada'), '%d/%m/%Y'), 'intervaloDataEntrada'],
+                [Sequelize.fn('date_format', Sequelize.col('intervaloHorarioEntrada'), '%H:%i'), 'intervaloHorarioEntrada'],
+                [Sequelize.fn('date_format', Sequelize.col('intervaloDataSaida'), '%d/%m/%Y'), 'intervaloDataSaida'],
+                [Sequelize.fn('date_format', Sequelize.col('intervaloHorarioSaida'), '%H:%i'), 'intervaloHorarioSaida'],
                 [Sequelize.fn('date_format', Sequelize.col('dataSaida'), '%d/%m/%Y'), 'dataSaida'],
                 [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
             ],
@@ -61,18 +67,36 @@ module.exports = class UsuarioController {
 }]}).then((employees) => {
         employees.forEach((funcionario) => {
             moment.locale("pt-br"); 
+            let horasPagas = 0;
+            let horasDescontadas = 0;
             const parteA = funcionario.cpf.substring(0,3);
             const parteB = funcionario.cpf.substring(3,6);
             const parteC = funcionario.cpf.substring(6,9);
             const parteD = funcionario.cpf.substring(9,11);
             funcionario.cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
-            const dataAtual = moment(funcionario['pontos.dataSaida'] + ' ' + funcionario['pontos.horarioSaida'], 'DD/MM/YYYY HH:mm');
-            funcionario.dataSaida = dataAtual.format('LLL');
+
             const primeiroPonto = moment(funcionario['pontos.dataEntrada'] + ' ' + funcionario['pontos.horarioEntrada'], 'DD/MM/YYYY HH:mm');
-            funcionario.dataEntrada = primeiroPonto.format('LLL'); ;
-            dataAtual.diff(primeiroPonto, "hours") ? funcionario.horasPaga = dataAtual.diff(primeiroPonto, "hours") : null;
+            funcionario.primeiroPonto = primeiroPonto.format('LLL');
+
+            const intervaloEntrada = moment(funcionario['pontos.intervaloDataEntrada'] + ' ' + funcionario['pontos.intervaloHorarioEntrada'], 'DD/MM/YYYY HH:mm');
+            funcionario.intervaloEntrada = intervaloEntrada.format('LLL');
+
+            const intervaloSaida = moment(funcionario['pontos.intervaloDataSaida'] + ' ' + funcionario['pontos.intervaloHorarioSaida'], 'DD/MM/YYYY HH:mm');
+            funcionario.intervaloSaida = intervaloSaida.format('LLL');
+
+            const ultimoPonto = moment(funcionario['pontos.dataSaida'] + ' ' + funcionario['pontos.horarioSaida'], 'DD/MM/YYYY HH:mm');
+            funcionario.ultimoPonto = ultimoPonto.format('LLL');
+
+            ultimoPonto.diff(primeiroPonto, "hours") ? horasPagas += ultimoPonto.diff(primeiroPonto, "hours") : null;
+            intervaloSaida.diff(intervaloEntrada, "hours") ? horasDescontadas += intervaloSaida.diff(intervaloEntrada, "hours") : null;
+            funcionario.horasPagas = (horasPagas-horasDescontadas);
+
             delete funcionario['pontos.dataEntrada'];
             delete funcionario['pontos.horarioEntrada'];
+            delete funcionario['pontos.intervaloDataEntrada'];
+            delete funcionario['pontos.intervaloHorarioEntrada'];
+            delete funcionario['pontos.intervaloDataSaida'];
+            delete funcionario['pontos.intervaloHorarioSaida'];
             delete funcionario['pontos.dataSaida'];
             delete funcionario['pontos.horarioSaida'];
         });   
@@ -143,6 +167,10 @@ module.exports = class UsuarioController {
                     "id",
                     [Sequelize.fn('date_format', Sequelize.col('dataEntrada'), '%d/%m/%Y'), 'dataEntrada'],
                     [Sequelize.fn('date_format', Sequelize.col('horarioEntrada'), '%H:%i'), 'horarioEntrada'],
+                    [Sequelize.fn('date_format', Sequelize.col('intervaloDataEntrada'), '%d/%m/%Y'), 'intervaloDataEntrada'],
+                    [Sequelize.fn('date_format', Sequelize.col('intervaloHorarioEntrada'), '%H:%i'), 'intervaloHorarioEntrada'],
+                    [Sequelize.fn('date_format', Sequelize.col('intervaloDataSaida'), '%d/%m/%Y'), 'intervaloDataSaida'],
+                    [Sequelize.fn('date_format', Sequelize.col('intervaloHorarioSaida'), '%H:%i'), 'intervaloHorarioSaida'],
                     [Sequelize.fn('date_format', Sequelize.col('dataSaida'), '%d/%m/%Y'), 'dataSaida'],
                     [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
                     "funcionarioMatricula"
@@ -154,6 +182,7 @@ module.exports = class UsuarioController {
         todosFuncionarios = JSON.parse(JSON.stringify(todosFuncionarios, null, 2 ));
         todosFuncionarios.map((funcionario) =>{
             let horasPagas = 0;
+            let horasDescontadas = 0;
             const parteA = funcionario.cpf.substring(0,3);
             const parteB = funcionario.cpf.substring(3,6);
             const parteC = funcionario.cpf.substring(6,9);
@@ -161,17 +190,31 @@ module.exports = class UsuarioController {
             funcionario.cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
 
             for(let pontos of funcionario.pontos) {
-                const dataAtual = moment(pontos['dataSaida'] + ' ' + pontos['horarioSaida'], 'DD/MM/YYYY HH:mm');
                 const primeiroPonto = moment(pontos['dataEntrada'] + ' ' +  pontos['horarioEntrada'], 'DD/MM/YYYY HH:mm');
-                dataAtual.diff(primeiroPonto, "hours") ? horasPagas += dataAtual.diff(primeiroPonto, "hours") : null;
+                const ultimoPonto = moment(pontos['dataSaida'] + ' ' + pontos['horarioSaida'], 'DD/MM/YYYY HH:mm');
+                ultimoPonto.diff(primeiroPonto, "hours") ? horasPagas += ultimoPonto.diff(primeiroPonto, "hours") : null;
+
+
+                const entradaIntervalo = moment(pontos['intervaloDataEntrada'] + ' ' +  pontos['intervaloHorarioEntrada'], 'DD/MM/YYYY HH:mm');
+                const saidaIntervalo = moment(pontos['intervaloDataSaida'] + ' ' +  pontos['intervaloHorarioSaida'], 'DD/MM/YYYY HH:mm');
+                saidaIntervalo.diff(entradaIntervalo, "hours") ? horasDescontadas += saidaIntervalo.diff(entradaIntervalo, "hours") : null;
             };
-            funcionario.horasPagas = horasPagas;
+            funcionario.horasPagas = (horasPagas-horasDescontadas);
 
             if(funcionario.pontos.length >= 1) {
                 funcionario.ultimaEntrada = funcionario.pontos[funcionario.pontos.length -1].dataEntrada.concat(' ', funcionario.pontos[funcionario.pontos.length -1].horarioEntrada);
-                funcionario.ultimaSaida = funcionario.pontos[funcionario.pontos.length -1].dataSaida.concat(' ', funcionario.pontos[funcionario.pontos.length -1].horarioSaida);
+                funcionario.ultimoPonto = funcionario.pontos[funcionario.pontos.length -1].dataSaida.concat(' ', funcionario.pontos[funcionario.pontos.length -1].horarioSaida);
                 delete funcionario.pontos;
             };
+            if(funcionario.horasPagas == funcionario.cargahorariasemanal) {
+                funcionario.semanaPaga = "Sim";
+            }else if(funcionario.horasPagas > funcionario.cargahorariasemanal) {
+                funcionario.semanaPaga = "Com Horas extras";
+            }else if(funcionario.horasPagas < funcionario.cargahorariasemanal) {
+                funcionario.semanaPaga = "Não";
+            };
+
+
         });
         return res.status(200).render('./admin/home', {title: "Home", funcionarios: todosFuncionarios});
     };

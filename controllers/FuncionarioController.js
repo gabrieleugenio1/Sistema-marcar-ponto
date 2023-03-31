@@ -37,13 +37,15 @@ module.exports = class FuncionarioController {
     static async index (req,res) {
         const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
         let qtdPontos = await Pontos.count({where: {dataEntrada:finalDate, funcionarioMatricula: req.userId }});
+        qtdPontos += await Pontos.count({where: {intervaloDataEntrada:finalDate, funcionarioMatricula: req.userId }});
+        qtdPontos += await Pontos.count({where: {intervaloDataSaida:finalDate, funcionarioMatricula: req.userId }});
         qtdPontos += await Pontos.count({where: {dataSaida:finalDate, funcionarioMatricula: req.userId }});
         console.log(qtdPontos)
         return res.status(200).render('./funcionario/home', {title: 'Home', erros: req.flash("erros"), presenca: qtdPontos});
     };
 
     static async cadastroFuncionario(req, res) {
-        return  res.status(200).render("admin/cadastrar-funcionario", { title: "Cadastro funcionário", erros: req.flash("erros")});       
+        return  res.status(200).render("./admin/cadastrar-funcionario", { title: "Cadastro funcionário", erros: req.flash("erros")});       
     };  
 
     static async cadastrarFuncionario(req, res) {
@@ -81,7 +83,7 @@ module.exports = class FuncionarioController {
           
     static async alterarFuncionario (req, res) {
         await Funcionarios.findByPk(req.params.id).then( employee =>{
-        return res.status(200).render("admin/alterar-funcionario", { title: "Alterar funcionário",funcionario: employee ,erros: req.flash("erros")});  
+        return res.status(200).render("./admin/alterar-funcionario", { title: "Alterar funcionário",funcionario: employee ,erros: req.flash("erros")});  
         });
     };
 
@@ -103,15 +105,15 @@ module.exports = class FuncionarioController {
             cargahorariasemanal: req.body.cargahorariasemanal,
             ativo: ativo
         };     
-        const erros = await validarFuncionario(validado, 'alteracao');     
-        const salt = bcrypt.genSaltSync(10);
-        const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);        
+        const erros = await validarFuncionario(validado, 'alteracao', req.body.id);          
         if(req.body.senha == undefined || req.body.senha == null || req.body.senha.trim() == '') {
             delete validado.senha;         
         }else if (req.body.senha <= 6) {
             erros.push({error: "Senha inválida! A senha deve ter no minimo 6 caracteres."});
         }else{
-            validado.senha = senhaCriptografada;
+            const salt = bcrypt.genSaltSync(10);
+            const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);   
+            validado.senha = senhaCriptografada;          
         }
         if (erros.length > 0){
             req.flash("erros", erros);
@@ -127,8 +129,10 @@ module.exports = class FuncionarioController {
     static async registraPonto(req, res) {
         const finalDate = new Date().toLocaleString("en-CA", {timeZone: "America/Recife"}).split(',')[0];
         let quantidade = await Pontos.count({where: {dataEntrada:finalDate, funcionarioMatricula: req.userId }});
+        quantidade += await Pontos.count({where: {intervaloDataEntrada:finalDate, funcionarioMatricula: req.userId }});
+        quantidade += await Pontos.count({where: {intervaloDataSaida:finalDate, funcionarioMatricula: req.userId }});
         quantidade += await Pontos.count({where: {dataSaida:finalDate, funcionarioMatricula: req.userId }});
-        
+        console.log("Contagem:", quantidade)
         if(quantidade == 0){
             console.log("Primeira entrada no dia", finalDate);
             return await Pontos.create({dataEntrada: Sequelize.fn('NOW'), horarioEntrada: Sequelize.fn('NOW'), funcionarioMatricula: req.userId }, {include: [ Funcionarios ]}).then(()=>{
@@ -136,6 +140,16 @@ module.exports = class FuncionarioController {
             }).catch(err => console.log(err));  
         }else if(quantidade == 1){
             console.log("Houve uma entrada no dia", finalDate);
+            return await Pontos.update({intervaloDataEntrada: Sequelize.fn('NOW'), intervaloHorarioEntrada: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}, {include: [ Funcionarios ]}).then(()=>{
+                return res.status(200).redirect('/funcionario/home');
+            }).catch(err => console.log(err));  
+        }else if(quantidade == 2){
+            console.log("Houve um intervalo no dia", finalDate);
+            return await Pontos.update({intervaloDataSaida: Sequelize.fn('NOW'), intervaloHorarioSaida: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}, {include: [ Funcionarios ]}).then(()=>{
+                return res.status(200).redirect('/funcionario/home');
+            }).catch(err => console.log(err));  
+        }else if(quantidade == 3){
+            console.log("Houve uma saida do intervalo no dia", finalDate);
             return await Pontos.update({dataSaida: Sequelize.fn('NOW'), horarioSaida: Sequelize.fn('NOW')}, {where: {dataEntrada: Sequelize.NOW(), funcionarioMatricula: req.userId}}, {include: [ Funcionarios ]}).then(()=>{
                 return res.status(200).redirect('/funcionario/home');
             }).catch(err => console.log(err));  

@@ -13,6 +13,18 @@ const Pontos = Conexao.define("pontos", {
     horarioEntrada: {
         type: DataTypes.TIME,
     },
+    intervaloDataEntrada:{
+        type:DataTypes.DATEONLY,
+    },
+    intervaloHorarioEntrada: {
+        type: DataTypes.TIME,
+    },
+    intervaloDataSaida:{
+        type:DataTypes.DATEONLY,
+    },
+    intervaloHorarioSaida: {
+        type: DataTypes.TIME,
+    },
     dataSaida:{
         type:DataTypes.DATEONLY,
     },

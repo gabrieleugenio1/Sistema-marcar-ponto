@@ -22,6 +22,7 @@
             <th>CPF</th>
             <th>Carga Horaria Semanal</th>
             <th>Horas pagas na semana</th>
+            <th>Semana concluída</th>
             <th>Última Entrada</th>
             <th>Última Saída</th>
             <th>Editar</th>
@@ -37,6 +38,7 @@
             <td>000.000.000-83</td>
             <td>44h</td>
             <td>10h</td>
+            <td>Sim</td>
             <td>14/02/2023 08:00h</td>
             <td>14/02/2023 18:00h</td>
             <td><a href="#">Alterar</a></td>
@@ -51,8 +53,9 @@
             <td><%= funcionario.cpf %></td>
             <td><%= funcionario.cargahorariasemanal %>h</td>
             <td><%= funcionario.horasPagas ? funcionario.horasPagas + 'h': 'Nenhuma'%></td>
+            <td><%= funcionario.semanaPaga %></td>
             <td><%= funcionario.ultimaEntrada ? funcionario.ultimaEntrada +'h': "Nenhuma" %></td>
-            <td><%= funcionario.ultimaSaida ? funcionario.ultimaSaida + 'h': "Nenhuma" %></td>
+            <td><%= funcionario.ultimoPonto ? funcionario.ultimoPonto + 'h': "Nenhuma" %></td>
             <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
             <td><%= funcionario.ativo == 1 ? "Sim" : "Não" %></td>     
         </tr>

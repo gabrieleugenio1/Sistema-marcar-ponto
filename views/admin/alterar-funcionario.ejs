@@ -21,7 +21,7 @@
       <form action="/admin/alteracaoFuncionario" method="post" class="forms">
         <input type="hidden" id="id" name="id" value="<%= funcionario.matricula %>">
         <label for="matricula">Matrícula</label>
-        <input type="text" class="forms-input" name="matricula" id="matricula" value="<%= funcionario.matricula %>" placeholder="Deixe em branco para gerar automaticamente">
+        <input type="number" class="forms-input" name="matricula" id="matricula" value="<%= funcionario.matricula %>" placeholder="Deixe em branco para gerar automaticamente">
         <label for="nome">Nome</label>
         <input type="text" class="forms-input" name="nome" id="nome" placeholder="Nome" value="<%= funcionario.nome %>">
         <label for="email">Email</label>

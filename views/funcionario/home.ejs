@@ -25,7 +25,7 @@
       <div class="forms__inicio forms">
         <h2>Registro de presença</h2>
         <form action="/funcionario/registraPonto" method="post" class="forms">
-          <input class="forms__inicio__botao" type="submit" value="Sair" />
+          <input class="forms__inicio__botao" type="submit" value="Ir para intervalo" />
         </form>           
       </div>
     </div>
@@ -33,11 +33,28 @@
         <div class="forms__inicio forms">
           <h2>Registro de presença</h2>
           <form action="/funcionario/registraPonto" method="post" class="forms">
-            <input class="forms__inicio__botao" type="submit" id='submit' value="Parabéns! Você finalizou o seu dia." disabled/>
+            <input class="forms__inicio__botao" type="submit" id='submit' value="Sair do intervalo"/>
           </form>           
         </div>
       </div>
-        <%} %>       
+        <%} else if (presenca == 3) {%> 
+          <div class="forms__inicio forms">
+            <h2>Registro de presença</h2>
+            <form action="/funcionario/registraPonto" method="post" class="forms">
+              <input class="forms__inicio__botao" type="submit" id='submit' value="Sair"/>
+            </form>           
+          </div>
+        </div>
+          <%} else if (presenca == 4) {%> 
+            <div class="forms__inicio forms">
+              <h2>Registro de presença</h2>
+              <form action="/funcionario/registraPonto" method="post" class="forms">
+                <input class="forms__inicio__botao" type="submit" id='submit' value="Parabéns! Você finalizou o seu dia." disabled/>
+              </form>           
+            </div>
+          </div>
+            <%} %>     
+          
     </main>
   </body>
 </html>

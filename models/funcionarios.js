@@ -50,7 +50,7 @@ const Funcionarios = Conexao.define("funcionarios", {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: true
-    }
+    },
 });
 
 

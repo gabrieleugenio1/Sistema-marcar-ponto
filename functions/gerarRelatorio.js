@@ -16,6 +16,8 @@ module.exports = async(nomePlanilhaArquivo, data, usuario) => {
         "Carga Horaria Semanal",
         "Ativo",
         "Data Entrada",
+        "Intervalo Entrada",
+        "Intervalo Saida",
         "Data Saida",
         "Horas Pagas"
     ];
