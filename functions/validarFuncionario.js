@@ -36,19 +36,19 @@ module.exports = async (funcionario, tipo, matriculaOriginal) => {
   if(cpf) { 
     let cpfExiste = await Funcionarios.findOne({raw:true, where: {cpf: cpf}});
     cpf = cpf.trim(); // Limpa espaços em branco no inicio e final do cpf.}
+    /*  cpf = cpf.replace(/[^\d]/g, ''); */ // Remove caracteres não numéricos. 
     if (!validateCPF(cpf) || !cpf || cpf == undefined || cpf == null) {
       erros.push({ error: "CPF inválido!" });
      };    
     if(cpfExiste) {
       if(cpfExiste.matricula != matriculaOriginal) erros.push({ error: "CPF já existe!" });
     };
-
-    /*  cpf = cpf.replace(/[^\d]/g, ''); */ // Remove caracteres não numéricos. 
   };
-
-  if(!matricula || matricula == undefined || matricula == null || isNaN(matricula)) {
-    erros.push({error: "Matrícula inválida! Deve ser apenas números."});
-  }; 
+  if(matricula){
+    if(!matricula || matricula == undefined || matricula == null || isNaN(matricula)) {
+      erros.push({error: "Matrícula inválida! Deve ser apenas números."});
+    }; 
+  };
   
   if(!nome || nome == undefined || nome == null ) {
    erros.push({error: "Nome inválido! Não pode ser vazio e deve ser completo."});
