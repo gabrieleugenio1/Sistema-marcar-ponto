@@ -20,23 +20,23 @@
       <h1 class="h1__funcionario">Cadastrar novo funcionário</h1>
       <form action="/admin/cadastrarFuncionario" method="post" class="forms">
         <label for="matricula">Matrícula</label>
-        <input type="text" class="forms-input" name="matricula" id="matricula" placeholder="Deixe em branco para gerar automaticamente">
+        <input type="number" class="forms-input" name="matricula" id="matricula" placeholder="Deixe em branco para gerar automaticamente">
         <label for="nome">Nome</label>
-        <input type="text" class="forms-input" name="nome" id="nome" placeholder="Nome">
+        <input type="text" class="forms-input" name="nome" id="nome" placeholder="Nome" required>
         <label for="email">Email</label>
-        <input type="email" class="forms-input" name="email" id="email" placeholder="Email">
+        <input type="email" class="forms-input" name="email" id="email" placeholder="Email" required>
         <label for="senha">Senha</label>
-        <input type="password"class="forms-input" name="senha" id="senha" placeholder="Senha(Ele(a) poderá alterar depois)">
+        <input type="password"class="forms-input" name="senha" id="senha" placeholder="Senha(Ele(a) poderá alterar depois)" required> 
         <label for="cpf">CPF</label>
-        <input type="tel" class="forms-input" name="cpf" id="cpf" minlength="11" maxlength="11" placeholder="CPF">
+        <input type="tel" class="forms-input" name="cpf" id="cpf" minlength="11" maxlength="11" placeholder="CPF" required>
         <label for="funcao">Função</label>
-        <input type="text" class="forms-input" name="funcao" id="funcao" placeholder="Função">
+        <input type="text" class="forms-input" name="funcao" id="funcao" placeholder="Função" required>
         <label for="setor">Setor</label>
-        <input type="text" class="forms-input" name="setor" id="setor" placeholder="Setor">
+        <input type="text" class="forms-input" name="setor" id="setor" placeholder="Setor" required>
         <label for="cargahorariasemanal">Carga Horaria Semanal</label>
-        <input type="number" class="forms-input" min="0" max="44" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número">
+        <input type="number" class="forms-input" min="0" max="44" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número" required>
         <label for="ativo">Ativo</label>
-        <select class="forms-input" name="ativo" id="ativo">
+        <select class="forms-input" name="ativo" id="ativo" required>
           <option value="true" selected>Ativo</option>
           <option value="false">Desativado</option>
         </select>

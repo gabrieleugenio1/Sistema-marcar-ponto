@@ -44,10 +44,9 @@ module.exports = async (funcionario, tipo, matriculaOriginal) => {
       if(cpfExiste.matricula != matriculaOriginal) erros.push({ error: "CPF já existe!" });
     };
   };
-  if(matricula){
-    if(!matricula || matricula == undefined || matricula == null || isNaN(matricula)) {
-      erros.push({error: "Matrícula inválida! Deve ser apenas números."});
-    }; 
+  
+  if(matricula && isNaN(matricula)){
+    erros.push({error: "Matrícula inválida! Deve ser apenas números."});
   };
   
   if(!nome || nome == undefined || nome == null ) {
