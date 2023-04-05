@@ -42,7 +42,6 @@ module.exports = class UsuarioController {
         if(dataSelecionada == "Invalid Date" || !dataSelecionada || dataSelecionada.length > 10) {
             dataSelecionada = "1900-01-01";
         };
-        console.log(dataSelecionada);
         await Funcionarios.findAll({
             raw: true,            
             attributes:[
