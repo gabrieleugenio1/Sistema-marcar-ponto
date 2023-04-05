@@ -37,8 +37,12 @@ module.exports = class UsuarioController {
         };
 
     static async gerarRelatorio(req, res){
-        console.log(req.body.data);
-
+        moment.locale("en-ca");
+        let dataSelecionada = req.body.data ? moment(req.body.data).format("L") : null;           
+        if(dataSelecionada == "Invalid Date" || !dataSelecionada || dataSelecionada.length > 10) {
+            dataSelecionada = "1900-01-01";
+        };
+        console.log(dataSelecionada);
         await Funcionarios.findAll({
             raw: true,            
             attributes:[
@@ -63,7 +67,7 @@ module.exports = class UsuarioController {
                 [Sequelize.fn('date_format', Sequelize.col('horarioSaida'), '%H:%i'), 'horarioSaida'],
             ],
             model: Pontos, 
-            where:{dataEntrada: {[Sequelize.Op.gte]: moment().subtract(7, 'days').toDate()}},          
+            where:{dataEntrada: {[Sequelize.Op.gte]: dataSelecionada}},          
 }]}).then((employees) => {
         employees.forEach((funcionario) => {
             moment.locale("pt-br"); 
@@ -90,7 +94,7 @@ module.exports = class UsuarioController {
             ultimoPonto.diff(primeiroPonto, "hours") ? horasPagas += ultimoPonto.diff(primeiroPonto, "hours") : null;
             intervaloSaida.diff(intervaloEntrada, "hours") ? horasDescontadas += intervaloSaida.diff(intervaloEntrada, "hours") : null;
             funcionario.horasPagas = (horasPagas-horasDescontadas);
-
+           
             delete funcionario['pontos.dataEntrada'];
             delete funcionario['pontos.horarioEntrada'];
             delete funcionario['pontos.intervaloDataEntrada'];
@@ -100,6 +104,7 @@ module.exports = class UsuarioController {
             delete funcionario['pontos.dataSaida'];
             delete funcionario['pontos.horarioSaida'];
         });   
+
         moment.locale("cv");    
         novoRelatorio(moment().format("L"), employees, req.userId );         
         return res.status(200).redirect('/admin/relatorios');
@@ -206,6 +211,7 @@ module.exports = class UsuarioController {
                 funcionario.ultimoPonto = funcionario.pontos[funcionario.pontos.length -1].dataSaida.concat(' ', funcionario.pontos[funcionario.pontos.length -1].horarioSaida);
                 delete funcionario.pontos;
             };
+
             if(funcionario.horasPagas == funcionario.cargahorariasemanal) {
                 funcionario.semanaPaga = "Sim";
             }else if(funcionario.horasPagas > funcionario.cargahorariasemanal) {

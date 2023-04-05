@@ -19,7 +19,7 @@ module.exports = async(nomePlanilhaArquivo, data, usuario) => {
         "Intervalo Entrada",
         "Intervalo Saida",
         "Data Saida",
-        "Horas Pagas"
+        "Horas Pagas",
     ];
 
     let headingColumnIndex = 1;
