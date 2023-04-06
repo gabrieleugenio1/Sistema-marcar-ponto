@@ -6,7 +6,7 @@ const Conexao = new Sequelize(process.env.DATABASE, process.env.DB_NOME, process
   dialect: process.env.DB_DIALECT,
   timezone: process.env.DB_TIMEZONE,
   pool: {
-    max: 30,
+    max: 50,
     min: 0,
     idle: 10000
   }
