@@ -13,7 +13,7 @@ module.exports = class FuncionarioController {
         await Funcionarios.findOne({ where: { email: email} }).then(employee => {
             {
               if (employee != undefined) {
-                if (bcrypt.compareSync(senha, employee.senha)) {
+                if (bcrypt.compareSync(senha, employee.senha) && employee.ativo === true) {
                   const token = Autenticacao.gerarToken(employee);
                   res.cookie("token", token, {
                       httpOnly: true,

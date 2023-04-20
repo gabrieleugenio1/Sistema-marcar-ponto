@@ -25,7 +25,7 @@ module.exports = class UsuarioController {
     static async baixarRelatorio (req, res) {
         const codigo = req.query.codigo;
         const tipo = req.query.tipo;
-        if (tipo == "baixar"){
+        if (tipo == "baixar") {
             await Relatorios.findOne({where:{id:codigo}}).then(arquivo => {
                 res.status(200).download(arquivo.caminho);
             }).catch(()=> res.send(JSON.stringify("Arquivo não existe")));
@@ -34,7 +34,7 @@ module.exports = class UsuarioController {
         }else{
             res.send(JSON.stringify("Arquivo não existe ou caminho da URL incorreto"));
         }; 
-        };
+    };
 
     static async gerarRelatorio(req, res){
         moment.locale("en-ca");
@@ -182,6 +182,10 @@ module.exports = class UsuarioController {
                 where:{dataEntrada: {[Sequelize.Op.between]: [moment().day(0).toDate(), moment().day(6).toDate()]}}, 
                 required:false,     
             }], 
+            order: [
+                ['ativo', 'DESC'],
+                ['nome', 'ASC'],
+            ],
         });
         todosFuncionarios = JSON.parse(JSON.stringify(todosFuncionarios, null, 2 ));
         todosFuncionarios.map((funcionario) =>{
@@ -207,7 +211,7 @@ module.exports = class UsuarioController {
 
             if(funcionario.pontos.length >= 1) {
                 funcionario.ultimaEntrada = funcionario.pontos[funcionario.pontos.length -1].dataEntrada.concat(' ', funcionario.pontos[funcionario.pontos.length -1].horarioEntrada);
-                funcionario.ultimoPonto = funcionario.pontos[funcionario.pontos.length -1].dataSaida.concat(' ', funcionario.pontos[funcionario.pontos.length -1].horarioSaida);
+                if(funcionario.pontos[funcionario.pontos.length -1].horarioSaida) funcionario.ultimoPonto = funcionario.pontos[funcionario.pontos.length -1].dataSaida.concat(' ', funcionario.pontos[funcionario.pontos.length -1].horarioSaida);
                 delete funcionario.pontos;
             };
 
