@@ -28,12 +28,12 @@ module.exports = class PrincipalController {
         const funcionarioEmail = await Funcionarios.findOne({where:{email: email}})
         if(usuarioEmail){
             const codigoEmail = await Codigo.create({codigo:codigo, dataGerada:Sequelize.fn('NOW'), horarioGerado:Sequelize.fn('NOW'), ativo:true,usuarioId:usuarioEmail.id}); 
-            const link = process.env.URL + ':' + process.env.PORT + '/esqueci-senha?codigo=' + codigoEmail.codigo;
-            enviarEmail(link, usuarioEmail.email);
+            const link = req.headers.host + '/esqueci-senha?codigo=' + codigoEmail.codigo;
+            enviarEmail(link, usuarioEmail.email, req.protocol);
         }else if(funcionarioEmail){
             const codigoEmail = await Codigo.create({codigo:codigo, dataGerada:Sequelize.fn('NOW'), horarioGerado:Sequelize.fn('NOW'), ativo:true,funcionarioMatricula:funcionarioEmail.matricula}); 
-            const link = process.env.URL + ':' + process.env.PORT + '/esqueci-senha?codigo=' + codigoEmail.codigo;
-            enviarEmail(link, funcionarioEmail.email);
+            const link = req.headers.host + '/esqueci-senha?codigo=' + codigoEmail.codigo;
+            enviarEmail(link, funcionarioEmail.email, req.protocol);
         };
         req.flash('mensagem','Link para recuperação enviado,caso não encontre, verifique a caixa de spam');
         return res.status(200).redirect("/esqueci-senha");

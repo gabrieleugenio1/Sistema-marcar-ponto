@@ -1,10 +1,10 @@
 //Conectando com o banco
 const { Conexao } = require('../db/Conexao');
 const routes = require('../routes');
-const flash = require("connect-flash");
+const flash = require('connect-flash');
 const robots = require('express-robots-txt');
 const cookieParser = require('cookie-parser');
-const session = require("express-session");
+const session = require('express-session');
 
 function configExpress(express, app) {
 

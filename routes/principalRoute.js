@@ -8,11 +8,8 @@ router
       .get('/admin' ,PrincipalController.principal)
       .get('/', PrincipalController.principalFuncionario)
       .get('/esqueci-senha', PrincipalController.esqueciSenha)
+      .get('/logout', Autenticacao.verificaToken, PrincipalController.logout)
       .post('/envioSenha', PrincipalController.envioSenha)
       .post('/criarNovaSenha', PrincipalController.criarNovaSenha)
-      .get('/logout', Autenticacao.verificaToken, PrincipalController.logout)
-      
-
-
       
 module.exports = router;
