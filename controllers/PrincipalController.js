@@ -47,17 +47,21 @@ module.exports = class PrincipalController {
             let diferenca;
             const salt = bcrypt.genSaltSync(10);
             const senhaCriptografada = bcrypt.hashSync(senhaUm, salt);
-            const emailFuncionario = await Codigo.findOne({
+            const user = await Codigo.findOne({
                 raw:true, 
-                include: {model: Funcionarios}, 
+                include: {model: Funcionarios, Usuario}, 
                 where: { codigo: CodigoHidden }}
             );
-            if(emailFuncionario) horarioToken = moment(emailFuncionario.dataGerada), diferenca = dataAtual.diff(horarioToken, 'minutes');
-            console.log(diferenca);
+            if(user) horarioToken = moment(user.dataGerada), diferenca = dataAtual.diff(horarioToken, 'minutes');
             if(diferenca <= 5){
-                await Funcionarios.update({senha:senhaCriptografada}, {where: {email: emailFuncionario['funcionario.email']}})
                 req.flash('mensagem','Alteração feita com sucesso!');
-                return res.status(200).redirect("/");
+                if(user?.usuarioId) {
+                    await Usuario.update({senha:senhaCriptografada}, {where: {id: user?.usuarioId}})                 
+                    return res.status(200).redirect("/admin");
+                }else{
+                    await Funcionarios.update({senha:senhaCriptografada}, {where: {email: user['funcionario.email']}})
+                    return res.status(200).redirect("/");
+                }
             };
             req.flash('mensagemErro','Código expirado ou inexistente.');
             return res.status(200).redirect("/esqueci-senha");
@@ -76,7 +80,7 @@ module.exports = class PrincipalController {
     
     static async logout (req, res)  {
         res.clearCookie('token');
-        if (req.tipoConta == 'Admin') {            
+        if (req.tipoConta === 'Admin') {            
             return res.status(200).redirect('/admin');
         }
         return res.status(200).redirect('/')

@@ -31,7 +31,10 @@
     font-size: 1.6em;
     font-weight: bold;
   }
-  
+  .time__home img {
+    height: 3rem;
+    margin-bottom: 30px;
+  }
   .forms{
     display: flex;
     flex-direction: column;

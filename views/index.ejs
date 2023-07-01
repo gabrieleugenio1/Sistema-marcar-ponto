@@ -10,11 +10,17 @@
   </head>
   <body>
     <main>
-      <%if(erros.length > 0){ %>
+      <%if(erros?.length > 0){ %>
       <div class="alert danger">
         <p><b><% for(erro of erros) {%> <%= erro.error %> <% } %></b></p>
       </div>
-      <%} %> <%if(qtdFuncionarios!=0) { %> <%- include("./partials/tempo"); %>
+      <%} %>
+      <%if(mensagem?.length > 0){ %>
+        <div class="alert sucess">
+          <p><b><%= mensagem %> </b></p>
+        </div>
+      <%} %>
+      <%if(qtdFuncionarios!=0) { %> <%- include("./partials/tempo"); %>
       <div class="forms__inicio">
         <h2>Login Funcionário</h2>
         <form action="/login" method="post" class="forms">
