@@ -241,7 +241,6 @@ module.exports = class UsuarioController {
             email: req.body.email,  
             senha: req.body.senha
         };
-        console.log(validado)
         const erros = validarAdmin(validado, 'alteracao');     
         const salt = bcrypt.genSaltSync(10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);        

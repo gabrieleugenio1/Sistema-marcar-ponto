@@ -1,5 +1,4 @@
 const validateCPF = require('./validarCPF');
-const { Funcionarios } = require('../models/indexModels');
 
 module.exports = async (funcionario, tipo, matriculaOriginal) => {
   let matricula = funcionario.matricula;
@@ -32,15 +31,14 @@ module.exports = async (funcionario, tipo, matriculaOriginal) => {
     email = email.toLowerCase(); // Padroniza o e-mail em minúsculo.
   };
 
-  if(cpf) { 
-    let cpfExiste = await Funcionarios.findOne({raw:true, where: {cpf: cpf}});
-    cpf = cpf.trim(); // Limpa espaços em branco no inicio e final do cpf.}
-    /*  cpf = cpf.replace(/[^\d]/g, ''); */ // Remove caracteres não numéricos. 
-    if (!validateCPF(cpf) || !cpf || cpf === undefined || cpf === null) {
-      erros.push({ error: "CPF inválido!" });
-     };    
-    if(cpfExiste) {
-      if(cpfExiste.matricula !== matriculaOriginal) erros.push({ error: "CPF já existe!" });
+  if(tipo !== "alteracao") {
+    if(cpf) { 
+      cpf = cpf.trim(); // Limpa espaços em branco no inicio e final do cpf.}
+      /*  cpf = cpf.replace(/[^\d]/g, ''); */ // Remove caracteres não numéricos. 
+      if (!validateCPF(cpf) || !cpf || cpf === undefined || cpf === null) {
+        erros.push({ error: "CPF inválido!" });
+      };    
+
     };
   };
   

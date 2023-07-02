@@ -75,10 +75,15 @@ module.exports = class FuncionarioController {
 
         const salt = bcrypt.genSaltSync(10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);
-        validado.senha=senhaCriptografada;     
-        await Funcionarios.create(validado).then(() => {
-           return res.status(200).redirect("/admin/home")}
-        );
+        validado.senha=senhaCriptografada; 
+        try{
+            await Funcionarios.create(validado).then(() => {
+               return res.status(201).redirect("/admin/home")}
+            );
+        }catch{
+            req.flash("erros", [{error: "Falha ao criar funcionário."}]);
+            return res.status(500).redirect("/admin/home");
+        } 
     };
           
     static async alterarFuncionario (req, res) {
@@ -89,9 +94,9 @@ module.exports = class FuncionarioController {
 
     static async alteracaoFuncionario (req, res) {
         let ativo = req.body.ativo;        
-        if (ativo == 'true') {
+        if (ativo === 'true') {
             ativo = true;
-        } else if (ativo == 'false') {
+        } else if (ativo === 'false') {
             ativo = false;
         };
         const validado = {
@@ -99,13 +104,12 @@ module.exports = class FuncionarioController {
             nome: toTitleCase(req.body.nome),
             email: req.body.email,
             senha :req.body.senha,
-            cpf: req.body.cpf,
             funcao: req.body.funcao,
             setor: req.body.setor,
             cargahorariasemanal: req.body.cargahorariasemanal,
             ativo: ativo
         };     
-        const erros = await validarFuncionario(validado, 'alteracao', req.body.id);          
+        const erros = await validarFuncionario(validado, 'alteracao', req.body.id);   
         if(req.body.senha == undefined || req.body.senha == null || req.body.senha.trim() == '') {
             delete validado.senha;         
         }else if (req.body.senha <= 6) {
@@ -136,7 +140,7 @@ module.exports = class FuncionarioController {
         if(quantidade == 0){
             console.log("Primeira entrada no dia", finalDate);
             return await Pontos.create({dataEntrada: Sequelize.fn('NOW'), horarioEntrada: Sequelize.fn('NOW'), funcionarioMatricula: req.userId }, {include: [ Funcionarios ]}).then(()=>{
-                return res.status(200).redirect('/funcionario/home');
+                return res.status(201).redirect('/funcionario/home');
             }).catch(err => console.log(err));  
         }else if(quantidade == 1){
             console.log("Houve uma entrada no dia", finalDate);
