@@ -184,6 +184,7 @@ module.exports = class UsuarioController {
             }], 
             order: [
                 ['ativo', 'DESC'],
+                ['matricula', 'ASC'],
                 ['nome', 'ASC'],
             ],
         });
@@ -191,10 +192,10 @@ module.exports = class UsuarioController {
         todosFuncionarios.map((funcionario) =>{
             let horasPagas = 0;
             let horasDescontadas = 0;
-            const parteA = funcionario.cpf.substring(0,3);
-            const parteB = funcionario.cpf.substring(3,6);
-            const parteC = funcionario.cpf.substring(6,9);
-            const parteD = funcionario.cpf.substring(9,11);
+            const parteA = funcionario.cpf?.substring(0,3);
+            const parteB = funcionario.cpf?.substring(3,6);
+            const parteC = funcionario.cpf?.substring(6,9);
+            const parteD = funcionario.cpf?.substring(9,11);
             funcionario.cpf = parteA + "." + parteB + "." + parteC + "-" + parteD;
 
             for(let pontos of funcionario.pontos) {
