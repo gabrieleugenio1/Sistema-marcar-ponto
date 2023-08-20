@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/cadastrar-funcionario.css"> 
+    <link rel="icon" type="image/x-icon" href="/assets/logo-branca.png">
+  </head>
+  <body>
+    <%- include("../partials/header"); %>
+    <main class="main__home">
+      <%if(erros.length > 0){ %>
+        <div class="alert danger">       
+          <p><b><% for(erro of erros) {%> <%= erro.error %> <% } %></b></p>       
+        </div>
+        <%} %>
+      <div class="main__home__div">
+      <h1 class="h1__funcionario">Alterar funcionário</h1>
+      <form action="/admin/alteracaoFuncionario" method="post" class="forms">
+        <input type="hidden" id="id" name="id" value="<%= funcionario.matricula %>">
+        <label for="matricula">Matrícula</label>
+        <input type="number" class="forms-input" name="matricula" id="matricula" value="<%= funcionario.matricula %>" placeholder="Deixe em branco para gerar automaticamente">
+        <label for="nome">Nome</label>
+        <input type="text" class="forms-input" name="nome" id="nome" placeholder="Nome" value="<%= funcionario.nome %>">
+        <label for="email">Email</label>
+        <input type="email" class="forms-input" name="email" id="email" value="<%= funcionario.email %>" placeholder="Email">
+        <label for="senha">Senha</label>
+        <input type="password"class="forms-input" name="senha" id="senha" placeholder="Senha(Ele(a) poderá alterar depois)">
+        <label for="funcao">Função</label>
+        <input type="text" class="forms-input" name="funcao" id="funcao" value="<%= funcionario.funcao %>"placeholder="Função">
+        <label for="setor">Setor</label>
+        <input type="text" class="forms-input" name="setor" id="setor" value="<%= funcionario.setor %>" placeholder="Setor">
+        <label for="cargahorariasemanal">Carga Horaria Semanal</label>
+        <input type="number" class="forms-input" value="<%= funcionario.cargahorariasemanal %>" name="cargahorariasemanal" id="cargahorariasemanal" placeholder="Digite apenas o número" min="0" max="44" >
+        <label for="ativo">Ativo</label>
+        <%if(funcionario.ativo === true){ %> 
+          <select class="forms-input" name="ativo" id="ativo">
+            <option value="true" selected>Ativo</option>
+            <option value="false">Desativado</option>
+          </select>          
+          <% } else {%> 
+            <select class="forms-input" name="ativo" id="ativo">
+              <option value="true" >Ativo</option>
+              <option value="false" selected>Desativado</option>
+            </select>
+            <%} %>        
+        <br>
+        <input type="submit" class="forms-input" value="Alterar funcionario">
+      </form>
+    </div>
+    </main>
+    <script src="/js/main.js"></script>
+  </body>
+</html>
