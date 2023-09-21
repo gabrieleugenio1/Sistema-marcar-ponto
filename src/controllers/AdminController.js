@@ -131,7 +131,7 @@ module.exports = class UsuarioController {
             req.flash("erros", erros);
             return res.status(200).redirect("/");
         };
-        const salt = bcrypt.genSaltSync(10);
+        const salt = bcrypt.genSaltSync(process.env.SALT_BCRYPT || 10);
         let senhaCriptografada = bcrypt.hashSync(validado.senha, salt);
         const User = {
             email:validado.email,
