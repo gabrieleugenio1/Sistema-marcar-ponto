@@ -79,7 +79,7 @@ module.exports = class FuncionarioController {
             return res.status(200).redirect("/admin/cadastrofuncionario");
         };
 
-        const salt = bcrypt.genSaltSync(10);
+        const salt = bcrypt.genSaltSync(process.env.SALT_BCRYPT || 10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);
         validado.senha=senhaCriptografada; 
         try{
@@ -122,7 +122,7 @@ module.exports = class FuncionarioController {
         }else if (req.body.senha <= 6) {
             erros.push({error: "Senha inválida! A senha deve ter no minimo 6 caracteres."});
         }else{
-            const salt = bcrypt.genSaltSync(10);
+            const salt = bcrypt.genSaltSync(process.env.SALT_BCRYPT || 10);
             const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);   
             validado.senha = senhaCriptografada;          
         }
