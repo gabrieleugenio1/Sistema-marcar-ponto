@@ -71,7 +71,7 @@ body {
 }
 .header__nav__ul-image{
   height: 60px;
-  margin-left: 10px;
+  margin: 0 10px;
 }
 .header__nav__ul > li {
   margin-right: 15px;
