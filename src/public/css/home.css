@@ -1,6 +1,18 @@
 .main__home{
     height: calc(100vh - 8.38em);
 }
+
+ section {
+    overflow-x: auto;
+  }
+
+.tabela__funcionario th,
+.tabela__funcionario td {
+    min-width: 90px; 
+    padding: 4px;
+    text-align: left;
+} 
+
 .tabela__funcionario{
     margin: 5px 10px 0 10px;
     width: calc(100% - 20px);
