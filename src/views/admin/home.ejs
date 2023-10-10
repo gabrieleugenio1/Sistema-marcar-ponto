@@ -13,42 +13,45 @@
     <%- include("../partials/header"); %>
     <main class="main__home">
       <h1 class="h1__funcionario">Funcionários</h1>
-      <table class="tabela__funcionario" border="1">
-        <thead>
-        <tr>
-            <th>Matrícula</th>
-            <th>Funcionário</th>
-            <th>Função</th>
-            <th>Setor</th>
-            <th>CPF</th>
-            <th>Carga Horaria Semanal</th>
-            <th>Horas pagas na semana</th>
-            <th>Semana concluída</th>
-            <th>Última Entrada</th>
-            <th>Última Saída</th>
-            <th>Editar</th>
-            <th>Ativo</th>
-        </tr>
-        </thead>
-        <tbody>
-          <% for(funcionario of funcionarios) { %> 
-          <tr>           
-            <td><%= funcionario.matricula %></td>
-            <td><%= funcionario.nome.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
-            <td><%= funcionario.funcao.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
-            <td><%= funcionario.setor.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
-            <td><%= funcionario.cpf %></td>
-            <td><%= funcionario.cargahorariasemanal %>h</td>
-            <td><%= funcionario.horasPagas ? funcionario.horasPagas + 'h': 'Nenhuma'%></td>
-            <td><%= funcionario.semanaPaga %></td>
-            <td><%= funcionario.ultimaEntrada ? funcionario.ultimaEntrada +'h': "Nenhuma" %></td>
-            <td><%= funcionario.ultimoPonto ? funcionario.ultimoPonto + 'h': "Nenhuma" %></td>
-            <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
-            <td><%= funcionario.ativo == 1 ? "Sim" : "Não" %></td>     
-        </tr>
-        <% } %>  %>
-        </tbody>
-     </table>
+      <section>
+        <table class="tabela__funcionario" border="1">
+          <thead>
+          <tr>
+              <th>Matrícula</th>
+              <th>Funcionário</th>
+              <th>Função</th>
+              <th>Setor</th>
+              <th>CPF</th>
+              <th>Carga Horaria Semanal</th>
+              <th>Horas pagas na semana</th>
+              <th>Semana concluída</th>
+              <th>Última Entrada</th>
+              <th>Última Saída</th>
+              <th>Editar</th>
+              <th>Ativo</th>
+          </tr>
+          </thead>
+          <tbody>
+            <% for(funcionario of funcionarios) { %> 
+            <tr>           
+              <td><%= funcionario.matricula %></td>
+              <td><%= funcionario.nome.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
+              <td><%= funcionario.funcao.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
+              <td><%= funcionario.setor.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase()) %></td>
+              <td><%= funcionario.cpf %></td>
+              <td><%= funcionario.cargahorariasemanal %>h</td>
+              <td><%= funcionario.horasPagas ? funcionario.horasPagas + 'h': 'Nenhuma'%></td>
+              <td><%= funcionario.semanaPaga %></td>
+              <td><%= funcionario.ultimaEntrada ? funcionario.ultimaEntrada +'h': "Nenhuma" %></td>
+              <td><%= funcionario.ultimoPonto ? funcionario.ultimoPonto + 'h': "Nenhuma" %></td>
+              <td><a href="/admin/alterarfuncionario/<%= funcionario.matricula %>">Alterar</a></td>
+              <td><%= funcionario.ativo == 1 ? "Sim" : "Não" %></td>     
+          </tr>
+          <% } %>  %>
+          </tbody>
+       </table>
+      </section>
+    
     </main>
   </body>
 </html>
