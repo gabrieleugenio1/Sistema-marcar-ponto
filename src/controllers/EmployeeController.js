@@ -79,7 +79,7 @@ module.exports = class FuncionarioController {
             return res.status(200).redirect("/admin/cadastrofuncionario");
         };
 
-        const salt = bcrypt.genSaltSync(process.env.SALT_BCRYPT || 10);
+        const salt = bcrypt.genSaltSync(process.env.SALT_BCRYPT ? parseInt(process.env.SALT_BCRYPT) : 10);
         const senhaCriptografada = bcrypt.hashSync(validado.senha, salt);
         validado.senha=senhaCriptografada; 
         try{

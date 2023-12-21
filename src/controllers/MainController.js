@@ -47,7 +47,7 @@ module.exports = class PrincipalController {
             const dataAtual = moment(Date.now());
             let horarioToken;
             let diferenca;
-            const salt = bcrypt.genSaltSync(process.env.SALT_BCRYPT || 10);
+            const salt = bcrypt.genSaltSync(process.env.SALT_BCRYPT ? parseInt(process.env.SALT_BCRYPT) : 10);
             const senhaCriptografada = bcrypt.hashSync(senhaUm, salt);
             const user = await Codigo.findOne({
                 raw:true, 
